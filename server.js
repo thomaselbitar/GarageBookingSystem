@@ -5,8 +5,10 @@ const express = require('express');
 const sequelize = require('./config/database');
 
 const User = require('./models/User');
+const Otp = require('./models/Otp');
 const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
+const customerAuthRoutes = require('./routes/customerAuthRoutes');
 const { requireAuth, requireRole } = require('./middleware/authMiddleware');
 
 const app = express();
@@ -14,6 +16,7 @@ const app = express();
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('public'));
 
 // View Engine
 app.set('view engine', 'ejs');
@@ -32,6 +35,7 @@ app.use(session({
 
 // Authentication Routes
 app.use('/', authRoutes);
+app.use('/', customerAuthRoutes);
 
 // Protected Dashboard
 // Admin Dashboard
@@ -63,6 +67,7 @@ const startServer = async () => {
 
     } catch (error) {
         console.error('Server Startup Failed:', error);
+        process.exit(1);
     }
 };
 

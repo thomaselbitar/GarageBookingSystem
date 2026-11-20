@@ -1,0 +1,95 @@
+<script>
+    const messageFor = (input, form) => {
+        const value = (input.value || '').trim();
+        const name = input.name;
+        const raw = input.value || '';
+
+        if (input.required && !value) {
+            if (name === 'email') return 'Please enter your email.';
+            if (name === 'username') return 'Please enter your username.';
+            if (name === 'password') return 'Please enter a password.';
+            if (name === 'confirmPassword') return 'Please confirm your password.';
+            if (name === 'otp') return 'Please enter the 6-digit code.';
+            return 'This field is required.';
+        }
+
+        if (input.type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            return 'Please enter a valid email address.';
+        }
+
+        if (name === 'otp' && value && !/^\d{6}$/.test(value)) {
+            return 'Enter the 6-digit code.';
+        }
+
+        if (name === 'password' && input.autocomplete === 'new-password' && raw.length > 0 && raw.length < 8) {
+            return 'Password must be at least 8 characters.';
+        }
+
+        if (name === 'confirmPassword') {
+            const password = form.querySelector('#password');
+            if (password && raw !== password.value) {
+                return 'Password confirmation does not match.';
+            }
+        }
+
+        return '';
+    };
+
+    const errorEl = (input) => {
+        const field = input.closest('.field');
+        if (!field) return null;
+        let message = field.querySelector('.field-error');
+        if (!message) {
+            message = document.createElement('p');
+            message.className = 'field-error';
+            message.setAttribute('role', 'alert');
+            field.appendChild(message);
+        }
+        return message;
+    };
+
+    const showError = (input, text) => {
+        const message = errorEl(input);
+        if (!message) return;
+        message.textContent = text;
+        message.classList.add('is-visible');
+    };
+
+    const clearError = (input) => {
+        const message = errorEl(input);
+        if (!message) return;
+        message.textContent = '';
+        message.classList.remove('is-visible');
+    };
+
+    document.querySelectorAll('form[method="POST"]').forEach((form) => {
+        if (form.querySelector('#resend-btn')) return;
+
+        form.setAttribute('novalidate', '');
+
+        const inputs = [...form.querySelectorAll('input')];
+
+        form.addEventListener('submit', (event) => {
+            let firstInvalid = null;
+
+            inputs.forEach((input) => {
+                const text = messageFor(input, form);
+                if (text) {
+                    showError(input, text);
+                    if (!firstInvalid) firstInvalid = input;
+                } else {
+                    clearError(input);
+                }
+            });
+
+            if (firstInvalid) {
+                event.preventDefault();
+                firstInvalid.focus();
+            }
+        });
+
+        inputs.forEach((input) => {
+            input.addEventListener('input', () => clearError(input));
+        });
+    });
+</script>

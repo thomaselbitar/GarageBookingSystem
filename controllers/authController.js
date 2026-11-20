@@ -73,12 +73,14 @@ exports.postLogin = async (req, res) => {
 
 // Logout
 exports.logout = (req, res) => {
+    const role = req.session.user && req.session.user.role;
+
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).send('Could not log out.');
         }
 
         res.clearCookie('connect.sid');
-        res.redirect('/login');
+        res.redirect(role === 'CUSTOMER' ? '/customer/login' : '/login');
     });
 };

@@ -1,0 +1,291 @@
+:root {
+    --bg-deep: #070b14;
+    --ink: #f7f4ee;
+    --muted: #9aa4b8;
+    --line: rgba(247, 244, 238, 0.12);
+    --amber: #ee7113;
+    --amber-soft: #f4a05a;
+    --copper: #df6e19;
+    --danger: #ff6b7d;
+    --success: #3dd68c;
+    --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body.customer-auth {
+    font-family: "Manrope", sans-serif;
+    color: var(--ink);
+    background: var(--bg-deep);
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+body.customer-auth::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 12% 18%, rgba(238, 113, 19, 0.16), transparent 32%),
+        radial-gradient(circle at 88% 82%, rgba(62, 207, 191, 0.1), transparent 28%),
+        linear-gradient(160deg, #070b14 0%, #0d1524 55%, #111a12 100%);
+    z-index: -2;
+}
+
+.auth-shell {
+    width: min(520px, 100%);
+    background: rgba(16, 24, 39, 0.88);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.auth-panel {
+    padding: 40px 36px 32px;
+}
+
+.brand-mark {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.brand-logo {
+    display: block;
+    height: 72px;
+    width: auto;
+    max-width: min(260px, 100%);
+    object-fit: contain;
+    mix-blend-mode: screen;
+}
+
+.auth-panel h1 {
+    font-family: "Oswald", sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.lede {
+    margin: 10px 0 24px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.alert {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 107, 125, 0.12);
+    border: 1px solid rgba(255, 107, 125, 0.32);
+    color: #ffd4da;
+    font-size: 0.92rem;
+}
+
+.alert.success {
+    background: rgba(61, 214, 140, 0.12);
+    border-color: rgba(61, 214, 140, 0.32);
+    color: #c8f7df;
+}
+
+.field {
+    margin-bottom: 16px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.field input {
+    width: 100%;
+    height: 52px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--ink);
+    padding: 0 16px;
+    font: inherit;
+    outline: none;
+}
+
+.field input:focus {
+    border-color: var(--amber);
+    background: rgba(238, 113, 19, 0.06);
+    box-shadow: 0 0 0 4px rgba(238, 113, 19, 0.12);
+}
+
+.otp-input {
+    letter-spacing: 0.4em;
+    text-align: center;
+    font-size: 1.4rem;
+    font-family: "Oswald", sans-serif;
+}
+
+.password-wrap {
+    position: relative;
+}
+
+.password-wrap input {
+    padding-right: 52px;
+}
+
+.toggle-pass {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.btn-primary,
+.btn-secondary {
+    width: 100%;
+    height: 54px;
+    margin-top: 8px;
+    border: 0;
+    border-radius: 14px;
+    font-family: "Oswald", sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--amber) 0%, var(--copper) 100%);
+    color: #1a1206;
+}
+
+.btn-secondary {
+    margin-top: 12px;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+}
+
+.auth-links {
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.auth-links a {
+    color: var(--amber-soft);
+    text-decoration: none;
+}
+
+body.customer-page {
+    min-height: 100vh;
+    font-family: "Manrope", sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, #0a101b, #0d1422 40%, #0a101b);
+}
+
+.customer-layout {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 20px 48px;
+}
+
+.customer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.customer-top .brand-logo {
+    height: 64px;
+    max-width: 220px;
+    margin-bottom: 12px;
+}
+
+.customer-top h1 {
+    font-family: "Oswald", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.eyebrow {
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.logout-btn {
+    height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+}
+
+.welcome-card,
+.panel-card {
+    background: #121b2b;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 16px;
+}
+
+.panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.panel-card h2 {
+    font-family: "Oswald", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+}
+
+.panel-card p,
+.welcome-card p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+    .auth-panel {
+        padding: 28px 20px;
+    }
+
+    .customer-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

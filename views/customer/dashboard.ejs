@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/customer-head') %>
+    <title>Customer Dashboard | Garage Booking</title>
+</head>
+<body class="customer-page">
+    <main class="customer-layout">
+        <header class="customer-top">
+            <div>
+                <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
+                <p class="eyebrow">Customer portal</p>
+                <h1>Your garage bookings</h1>
+            </div>
+            <form action="/logout" method="POST">
+                <button class="logout-btn" type="submit">Logout</button>
+            </form>
+        </header>
+
+        <section class="welcome-card">
+            <h2>Welcome<%= user.fullName ? ', ' + user.fullName : '' %>.</h2>
+            <p>You are signed in as a customer<%= user.email ? ' (' + user.email + ')' : '' %>. Book services and track your vehicles from this dashboard.</p>
+        </section>
+
+        <section class="panel-grid">
+            <article class="panel-card">
+                <h2>Upcoming bookings</h2>
+                <p>You have no upcoming appointments yet. Booking will appear here once that feature is connected.</p>
+            </article>
+            <article class="panel-card">
+                <h2>Vehicles</h2>
+                <p>Keep your vehicle details ready so the shop can prepare the right bay and parts.</p>
+            </article>
+            <article class="panel-card">
+                <h2>Account</h2>
+                <p>Your login uses email and password. Staff accounts cannot access this customer portal.</p>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

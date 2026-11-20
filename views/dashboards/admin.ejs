@@ -1,42 +1,121 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../partials/favicon') %>
     <title>Admin Dashboard | Garage Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
-<body>
+<body class="admin-page">
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="logo">
+                <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
+                <span>Admin console</span>
+            </div>
 
-    <header>
-        <h1>Garage Booking System</h1>
-        <p>Administration Panel</p>
-    </header>
+            <nav class="nav" aria-label="Admin">
+                <span class="active">Overview</span>
+                <a href="#managers">Managers</a>
+                <a href="#employees">Employees</a>
+                <a href="#customers">Customers</a>
+                <a href="#bookings">Bookings</a>
+                <a href="#services">Services</a>
+            </nav>
 
-    <main>
-        <h2>Welcome, <%= user.fullName %>!</h2>
-        <p>You are logged in as <strong>Administrator</strong>.</p>
+            <form class="sidebar-foot" action="/logout" method="POST">
+                <button class="logout-btn" type="submit">Logout</button>
+            </form>
+        </aside>
 
-        <section>
-            <h3>Dashboard Overview</h3>
-            <p>Manage the garage system from here.</p>
-        </section>
+        <main class="workspace">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Administration panel</p>
+                    <h1>Garage booking system</h1>
+                </div>
+                <div class="user-chip">
+                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <strong><%= user.fullName %></strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+            </header>
 
-        <section>
-            <h3>Management</h3>
-            <ul>
-                <li>Manage Managers</li>
-                <li>Manage Employees</li>
-                <li>Manage Customers</li>
-                <li>Manage Bookings</li>
-                <li>Manage Services</li>
-            </ul>
-        </section>
+            <section class="welcome-banner">
+                <h2>Welcome back, <%= user.fullName %>.</h2>
+                <p>You are logged in as Administrator. Use this console to keep crews, customers, and bookings in sync.</p>
+            </section>
 
-        <form action="/logout" method="POST">
-            <button type="submit">Logout</button>
-        </form>
-    </main>
+            <section class="stats" aria-label="Dashboard overview">
+                <article class="stat-card" style="--accent:#ee7113">
+                    <p>Open bookings</p>
+                    <strong>18</strong>
+                </article>
+                <article class="stat-card" style="--accent:#3ecfbf">
+                    <p>Active staff</p>
+                    <strong>12</strong>
+                </article>
+                <article class="stat-card" style="--accent:#6ea8ff">
+                    <p>Customers</p>
+                    <strong>64</strong>
+                </article>
+                <article class="stat-card" style="--accent:#b08cff">
+                    <p>Services live</p>
+                    <strong>5</strong>
+                </article>
+            </section>
 
+            <div class="section-head">
+                <div>
+                    <h2>Management</h2>
+                    <p>Jump into the areas you run from this garage.</p>
+                </div>
+            </div>
+
+            <section class="cards">
+                <article class="action-card" id="managers">
+                    <div class="icon-pill" style="--accent:#6ea8ff">M</div>
+                    <div>
+                        <h3>Manage managers</h3>
+                        <p>Assign shop leads and keep shift coverage balanced.</p>
+                    </div>
+                </article>
+                <article class="action-card" id="employees">
+                    <div class="icon-pill" style="--accent:#3ecfbf">E</div>
+                    <div>
+                        <h3>Manage employees</h3>
+                        <p>Track wash, detail, paint, and mechanic teams.</p>
+                    </div>
+                </article>
+                <article class="action-card" id="customers">
+                    <div class="icon-pill" style="--accent:#ee7113">C</div>
+                    <div>
+                        <h3>Manage customers</h3>
+                        <p>Keep vehicle profiles and contact details current.</p>
+                    </div>
+                </article>
+                <article class="action-card" id="bookings">
+                    <div class="icon-pill" style="--accent:#ff7a90">B</div>
+                    <div>
+                        <h3>Manage bookings</h3>
+                        <p>Review bay schedules and confirm incoming jobs.</p>
+                    </div>
+                </article>
+                <article class="action-card" id="services">
+                    <div class="icon-pill" style="--accent:#b08cff">S</div>
+                    <div>
+                        <h3>Manage services</h3>
+                        <p>Update service catalogs, durations, and pricing.</p>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
 </body>
 </html>

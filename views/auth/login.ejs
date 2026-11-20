@@ -1,45 +1,53 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Login | Garage Booking</title>
+    <%- include('../partials/favicon') %>
+    <title>Staff Login | AutoHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
-<body>
+<body class="login-page">
+    <main class="login-shell">
+        <%- include('../partials/login-brand', { caption: 'Keep your garage in motion.' }) %>
 
-    <h1>Staff Login</h1>
-    <p>Enter your username and password to continue.</p>
+        <section class="login-panel">
+            <h2>Log in to Auto<span>Hub</span></h2>
+            <p class="lede">Enter your username and password to continue.</p>
 
-    <% if (error) { %>
-        <p style="color: red;"><%= error %></p>
-    <% } %>
+            <% if (error) { %>
+                <p class="alert" role="alert"><%= error %></p>
+            <% } %>
 
-    <form action="/login" method="POST">
+            <form action="/login" method="POST" novalidate>
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" required>
+                    <p class="field-error" role="alert"></p>
+                </div>
 
-        <div>
-            <label for="username">Username</label>
-            <input
-                type="text"
-                id="username"
-                name="username"
-                required
-            >
-        </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="password" name="password" autocomplete="current-password" required>
+                        <button class="toggle-pass" type="button" aria-label="Show password">Show</button>
+                    </div>
+                    <p class="field-error" role="alert"></p>
+                </div>
 
-        <div>
-            <label for="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-            >
-        </div>
+                <button class="btn-login" type="submit">Login</button>
+            </form>
+            <div class="auth-links">
+                <p>Forgot password? Please contact <a href="tel:+96181690063">+961 81690063</a></p>
+            </div>
+            <p class="login-foot">Authorized garage staff only. Sessions expire after two hours of inactivity.</p>
+        </section>
+    </main>
 
-        <button type="submit">Login</button>
-
-    </form>
-
+    <%- include('../partials/password-toggle') %>
+    <%- include('../partials/form-validate') %>
 </body>
 </html>
