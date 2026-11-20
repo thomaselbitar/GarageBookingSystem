@@ -4,7 +4,10 @@ const User = require('../models/User');
 
 // Display login page
 exports.getLogin = (req, res) => {
-    res.render('auth/login', { error: null });
+    res.render('auth/login', {
+        error: null,
+        deactivated: req.query.deactivated === '1'
+    });
 };
 
 // Process staff login
@@ -14,7 +17,8 @@ exports.postLogin = async (req, res) => {
 
         if (!username || !password) {
             return res.render('auth/login', {
-                error: 'Please enter your username and password.'
+                error: 'Please enter your username and password.',
+                deactivated: false
             });
         }
 
@@ -22,9 +26,17 @@ exports.postLogin = async (req, res) => {
             where: { username }
         });
 
-        if (!user || !user.isActive) {
+        if (user && !user.isActive) {
             return res.render('auth/login', {
-                error: 'Invalid username or password.'
+                error: null,
+                deactivated: true
+            });
+        }
+
+        if (!user) {
+            return res.render('auth/login', {
+                error: 'Invalid username or password.',
+                deactivated: false
             });
         }
 
@@ -35,7 +47,8 @@ exports.postLogin = async (req, res) => {
 
         if (!passwordMatch) {
             return res.render('auth/login', {
-                error: 'Invalid username or password.'
+                error: 'Invalid username or password.',
+                deactivated: false
             });
         }
 

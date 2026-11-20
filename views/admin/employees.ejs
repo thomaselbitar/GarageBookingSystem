@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../partials/favicon') %>
+    <title>Manage Employees | Garage Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-page">
+    <div class="admin-layout">
+        <%- include('../partials/admin-sidebar', { navActive: 'employees' }) %>
+
+        <main class="workspace">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Administration panel</p>
+                    <h1>Manage employees</h1>
+                </div>
+                <div class="user-chip">
+                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <strong><%= user.fullName %></strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-toolbar">
+                <div class="section-head">
+                    <div>
+                        <h2><%= selectedRole.label %></h2>
+                        <p>Showing <%= selectedRole.label.toLowerCase() %> accounts.</p>
+                    </div>
+                </div>
+                <a class="create-staff-link" href="/admin/staff">Create staff</a>
+            </div>
+
+            <nav class="section-nav" aria-label="Employee types">
+                <% staffRoles.forEach((staffRole) => { %>
+                    <a href="/admin/employees?type=<%= staffRole.value %>" class="<%= selectedRole.value === staffRole.value ? 'active' : '' %>">
+                        <%= staffRole.label %>
+                        <span class="count"><%= counts[staffRole.value] %></span>
+                    </a>
+                <% }) %>
+            </nav>
+
+            <% if (!employees.length) { %>
+                <p class="empty-staff">No <%= selectedRole.label.toLowerCase() %> accounts to show.</p>
+            <% } else { %>
+                <ul class="employee-list">
+                    <% employees.forEach((employee) => { %>
+                        <li>
+                            <a class="employee-row" href="/admin/employees/<%= employee.id %>">
+                                <div class="avatar"><%= employee.fullName.charAt(0).toUpperCase() %></div>
+                                <div>
+                                    <strong><%= employee.fullName %></strong>
+                                    <small><%= employee.username %></small>
+                                </div>
+                                <% if (employee.isActive) { %>
+                                    <span class="status-pill is-active">Active</span>
+                                <% } else { %>
+                                    <span class="status-pill">Inactive</span>
+                                <% } %>
+                            </a>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } %>
+        </main>
+    </div>
+    <% if (deleteNotice) { %>
+        <div class="success-popup" id="delete-success-popup" role="dialog" aria-modal="true" aria-labelledby="delete-success-title">
+            <div class="success-popup-card">
+                <h2 id="delete-success-title">Account deleted</h2>
+                <p><%= deleteNotice.fullName %> was removed.</p>
+                <button class="staff-submit popup-ok" type="button" id="close-delete-success">OK</button>
+            </div>
+        </div>
+        <script>
+            const deleteSuccessPopup = document.querySelector('#delete-success-popup');
+            const closeDeleteSuccess = document.querySelector('#close-delete-success');
+            if (deleteSuccessPopup && closeDeleteSuccess) {
+                closeDeleteSuccess.addEventListener('click', () => deleteSuccessPopup.remove());
+                deleteSuccessPopup.addEventListener('click', (event) => {
+                    if (event.target === deleteSuccessPopup) deleteSuccessPopup.remove();
+                });
+            }
+        </script>
+    <% } else if (deleteError) { %>
+        <div class="success-popup" id="delete-failed-popup" role="dialog" aria-modal="true" aria-labelledby="delete-failed-title">
+            <div class="success-popup-card">
+                <h2 id="delete-failed-title">Could not delete account</h2>
+                <p><%= deleteError %></p>
+                <button class="staff-submit popup-ok" type="button" id="close-delete-failed">OK</button>
+            </div>
+        </div>
+        <script>
+            const deleteFailedPopup = document.querySelector('#delete-failed-popup');
+            const closeDeleteFailed = document.querySelector('#close-delete-failed');
+            if (deleteFailedPopup && closeDeleteFailed) {
+                closeDeleteFailed.addEventListener('click', () => deleteFailedPopup.remove());
+                deleteFailedPopup.addEventListener('click', (event) => {
+                    if (event.target === deleteFailedPopup) deleteFailedPopup.remove();
+                });
+            }
+        </script>
+    <% } %>
+</body>
+</html>

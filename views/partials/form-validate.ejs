@@ -4,9 +4,15 @@
         const name = input.name;
         const raw = input.value || '';
 
+        if (input.readOnly || input.disabled) {
+            return '';
+        }
+
         if (input.required && !value) {
             if (name === 'email') return 'Please enter your email.';
             if (name === 'username') return 'Please enter your username.';
+            if (name === 'fullName') return 'Please enter the employee full name.';
+            if (name === 'role') return 'Select a staff role.';
             if (name === 'password') return 'Please enter a password.';
             if (name === 'confirmPassword') return 'Please confirm your password.';
             if (name === 'otp') return 'Please enter the 6-digit code.';
@@ -23,6 +29,10 @@
 
         if (name === 'password' && input.autocomplete === 'new-password' && raw.length > 0 && raw.length < 8) {
             return 'Password must be at least 8 characters.';
+        }
+
+        if (name === 'password' && input.autocomplete === 'new-password' && raw.length > 72) {
+            return 'Password must be between 8 and 72 characters.';
         }
 
         if (name === 'confirmPassword') {
@@ -67,7 +77,7 @@
 
         form.setAttribute('novalidate', '');
 
-        const inputs = [...form.querySelectorAll('input')];
+        const inputs = [...form.querySelectorAll('input, select')];
 
         form.addEventListener('submit', (event) => {
             let firstInvalid = null;
@@ -90,6 +100,7 @@
 
         inputs.forEach((input) => {
             input.addEventListener('input', () => clearError(input));
+            input.addEventListener('change', () => clearError(input));
         });
     });
 </script>

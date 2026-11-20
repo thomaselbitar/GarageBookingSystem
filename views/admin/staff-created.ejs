@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../partials/favicon') %>
+    <title><%= account ? 'Staff Account Created' : 'Credentials Unavailable' %> | Garage Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-page">
+    <div class="admin-layout">
+        <%- include('../partials/admin-sidebar', { navActive: 'staff' }) %>
+
+        <main class="workspace">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Administration panel</p>
+                    <h1>Garage booking system</h1>
+                </div>
+                <div class="user-chip">
+                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <strong><%= user.fullName %></strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+            </header>
+
+            <% if (account) { %>
+                <section class="welcome-banner">
+                    <h2>Staff account created</h2>
+                    <p>The account is active. Copy the credentials below before you leave this page.</p>
+                </section>
+
+                <section class="staff-panel" aria-labelledby="credentials-title">
+                    <div class="section-head">
+                        <div>
+                            <h2 id="credentials-title">New employee credentials</h2>
+                            <p>Share the temporary password securely. It cannot be shown again.</p>
+                        </div>
+                    </div>
+
+                    <div class="credential-list">
+                        <div class="credential-row">
+                            <label for="cred-fullname">Full name</label>
+                            <div class="copy-line">
+                                <input id="cred-fullname" data-label="Full name" autocomplete="off" spellcheck="false" readonly value="<%= account.fullName %>">
+                                <button class="copy-btn" type="button" data-copy-target="cred-fullname">Copy</button>
+                            </div>
+                        </div>
+                        <div class="credential-row">
+                            <label for="cred-username">Username</label>
+                            <div class="copy-line">
+                                <input id="cred-username" data-label="Username" autocomplete="off" spellcheck="false" readonly value="<%= account.username %>">
+                                <button class="copy-btn" type="button" data-copy-target="cred-username">Copy</button>
+                            </div>
+                        </div>
+                        <div class="credential-row">
+                            <label for="cred-role">Role</label>
+                            <div class="copy-line">
+                                <input id="cred-role" data-label="Role" data-role="<%= account.role %>" autocomplete="off" spellcheck="false" readonly value="<%= account.roleLabel %>">
+                                <button class="copy-btn" type="button" data-copy-target="cred-role">Copy</button>
+                            </div>
+                        </div>
+                        <div class="credential-row">
+                            <label for="cred-password">Temporary password</label>
+                            <div class="copy-line">
+                                <input id="cred-password" data-label="Temporary password" autocomplete="off" spellcheck="false" readonly value="<%= account.temporaryPassword %>">
+                                <button class="copy-btn" type="button" data-copy-target="cred-password">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="secure-note">Share this temporary password securely with the new employee. It is shown only once and will not be displayed again after you leave or refresh this page.</p>
+                    <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+
+                    <div class="result-actions">
+                        <a class="secondary" href="/admin/employees?type=<%= account.role %>">
+                            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+                                <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Back
+                        </a>
+                        <button class="copy-btn" type="button" id="copy-all">Copy all credentials</button>
+                    </div>
+                </section>
+            <% } else { %>
+                <section class="welcome-banner">
+                    <h2>Credentials no longer available</h2>
+                    <p>The temporary password was shown once and cannot be displayed again.</p>
+                </section>
+
+                <section class="staff-panel">
+                    <p class="secure-note">This page does not keep the password. Use the copy you already shared, or create another account only if those credentials were lost.</p>
+                    <div class="result-actions">
+                        <a class="secondary" href="/admin/employees<%= backRole ? '?type=' + backRole : '' %>">
+                            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+                                <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Back
+                        </a>
+                        <a class="primary" href="/admin/staff">Create another account</a>
+                    </div>
+                </section>
+            <% } %>
+        </main>
+    </div>
+
+    <% if (account) { %>
+        <script>
+            const status = document.querySelector('#copy-status');
+
+            const copyText = async (text, button) => {
+                try {
+                    await navigator.clipboard.writeText(text);
+                } catch (error) {
+                    const area = document.createElement('textarea');
+                    area.value = text;
+                    area.setAttribute('readonly', '');
+                    area.style.position = 'fixed';
+                    area.style.left = '-9999px';
+                    document.body.appendChild(area);
+                    area.select();
+                    document.execCommand('copy');
+                    area.remove();
+                }
+
+                const previous = button.textContent;
+                button.textContent = 'Copied';
+                if (status) {
+                    status.textContent = previous === 'Copy all credentials'
+                        ? 'All credentials copied.'
+                        : `${button.closest('.credential-row')?.querySelector('label')?.textContent || 'Value'} copied.`;
+                }
+                window.setTimeout(() => {
+                    button.textContent = previous;
+                }, 1500);
+            };
+
+            document.querySelectorAll('[data-copy-target]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const input = document.getElementById(button.getAttribute('data-copy-target'));
+                    if (!input) return;
+                    copyText(input.value, button);
+                });
+            });
+
+            document.querySelectorAll('.copy-line input').forEach((input) => {
+                input.addEventListener('focus', () => input.select());
+            });
+
+            const copyAll = document.querySelector('#copy-all');
+            if (copyAll) {
+                copyAll.addEventListener('click', () => {
+                    const lines = [...document.querySelectorAll('.credential-row')].map((row) => {
+                        const label = row.querySelector('label').textContent;
+                        const value = row.querySelector('input').value;
+                        return `${label}: ${value}`;
+                    });
+                    copyText(lines.join('\n'), copyAll);
+                });
+            }
+
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    window.location.reload();
+                }
+            });
+        </script>
+    <% } %>
+</body>
+</html>

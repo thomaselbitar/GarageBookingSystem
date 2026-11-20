@@ -9,7 +9,7 @@ const Otp = require('./models/Otp');
 const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
 const customerAuthRoutes = require('./routes/customerAuthRoutes');
-const { requireAuth, requireRole } = require('./middleware/authMiddleware');
+const staffAccountRoutes = require('./routes/staffAccountRoutes');
 
 const app = express();
 
@@ -36,19 +36,7 @@ app.use(session({
 // Authentication Routes
 app.use('/', authRoutes);
 app.use('/', customerAuthRoutes);
-
-// Protected Dashboard
-// Admin Dashboard
-app.get(
-    '/admin/dashboard',
-    requireAuth,
-    requireRole('ADMIN'),
-    (req, res) => {
-        res.render('dashboards/admin', {
-            user: req.session.user
-        });
-    }
-);
+app.use('/', staffAccountRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 3000;

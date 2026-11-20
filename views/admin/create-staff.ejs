@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../partials/favicon') %>
+    <title>Create Staff Account | Garage Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-page">
+    <div class="admin-layout">
+        <%- include('../partials/admin-sidebar', { navActive: 'staff' }) %>
+
+        <main class="workspace">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Administration panel</p>
+                    <h1>Create staff account</h1>
+                </div>
+                <div class="user-chip">
+                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <strong><%= user.fullName %></strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+            </header>
+
+            <section class="welcome-banner">
+                <h2>Add a staff account</h2>
+                <p>Choose the employee name and role. The username and temporary password are generated for you.</p>
+            </section>
+
+            <section class="staff-panel">
+                <% if (formError) { %>
+                    <p class="form-alert" role="alert"><%= formError %></p>
+                <% } %>
+
+                <form class="staff-form" action="/admin/staff" method="POST" autocomplete="off">
+                    <div class="staff-form-grid">
+                        <div class="field">
+                            <label for="fullName">Full name</label>
+                            <input
+                                type="text"
+                                id="fullName"
+                                name="fullName"
+                                maxlength="100"
+                                autocomplete="name"
+                                required
+                                value="<%= formValues.fullName %>"
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="role">Role</label>
+                            <select id="role" name="role" required>
+                                <% const selectedRole = staffRoles.some((staffRole) => staffRole.value === formValues.role); %>
+                                <option value="" <%= selectedRole ? '' : 'selected' %>>Select a role</option>
+                                <% staffRoles.forEach((staffRole) => { %>
+                                    <option value="<%= staffRole.value %>" <%= formValues.role === staffRole.value ? 'selected' : '' %>><%= staffRole.label %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="staff-actions">
+                            <span class="staff-actions-label" aria-hidden="true">&nbsp;</span>
+                            <div class="staff-actions-row">
+                                <button class="popup-cancel" type="button" id="cancel-staff">Cancel</button>
+                                <button class="staff-submit" type="submit">Create account</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="form-help">A username and temporary password are created automatically. You will see them once, immediately after the account is saved.</p>
+                </form>
+            </section>
+        </main>
+    </div>
+    <div class="success-popup" id="cancel-popup" hidden role="dialog" aria-modal="true" aria-labelledby="cancel-popup-title">
+        <div class="success-popup-card">
+            <h2 id="cancel-popup-title">Leave this page?</h2>
+            <p>The name and role you entered will not be saved.</p>
+            <div class="popup-actions">
+                <button class="popup-cancel" type="button" id="cancel-stay">Keep editing</button>
+                <a class="staff-submit" href="/admin/employees">Leave</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        const cancelStaff = document.querySelector('#cancel-staff');
+        const cancelPopup = document.querySelector('#cancel-popup');
+        const cancelStay = document.querySelector('#cancel-stay');
+        const fullName = document.querySelector('#fullName');
+        const role = document.querySelector('#role');
+
+        const formIsEmpty = () => !fullName.value.trim() && !role.value;
+
+        if (cancelStaff && cancelPopup) {
+            cancelStaff.addEventListener('click', () => {
+                if (formIsEmpty()) {
+                    window.location.href = '/admin/employees';
+                    return;
+                }
+
+                cancelPopup.hidden = false;
+            });
+
+            cancelStay.addEventListener('click', () => {
+                cancelPopup.hidden = true;
+            });
+
+            cancelPopup.addEventListener('click', (event) => {
+                if (event.target === cancelPopup) cancelPopup.hidden = true;
+            });
+        }
+    </script>
+    <%- include('../partials/form-validate') %>
+</body>
+</html>

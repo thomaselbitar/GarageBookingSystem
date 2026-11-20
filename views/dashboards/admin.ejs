@@ -12,25 +12,7 @@
 </head>
 <body class="admin-page">
     <div class="admin-layout">
-        <aside class="sidebar">
-            <div class="logo">
-                <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
-                <span>Admin console</span>
-            </div>
-
-            <nav class="nav" aria-label="Admin">
-                <span class="active">Overview</span>
-                <a href="#managers">Managers</a>
-                <a href="#employees">Employees</a>
-                <a href="#customers">Customers</a>
-                <a href="#bookings">Bookings</a>
-                <a href="#services">Services</a>
-            </nav>
-
-            <form class="sidebar-foot" action="/logout" method="POST">
-                <button class="logout-btn" type="submit">Logout</button>
-            </form>
-        </aside>
+        <%- include('../partials/admin-sidebar', { navActive: 'overview' }) %>
 
         <main class="workspace">
             <header class="topbar">
@@ -68,51 +50,6 @@
                 <article class="stat-card" style="--accent:#b08cff">
                     <p>Services live</p>
                     <strong>5</strong>
-                </article>
-            </section>
-
-            <div class="section-head">
-                <div>
-                    <h2>Management</h2>
-                    <p>Jump into the areas you run from this garage.</p>
-                </div>
-            </div>
-
-            <section class="cards">
-                <article class="action-card" id="managers">
-                    <div class="icon-pill" style="--accent:#6ea8ff">M</div>
-                    <div>
-                        <h3>Manage managers</h3>
-                        <p>Assign shop leads and keep shift coverage balanced.</p>
-                    </div>
-                </article>
-                <article class="action-card" id="employees">
-                    <div class="icon-pill" style="--accent:#3ecfbf">E</div>
-                    <div>
-                        <h3>Manage employees</h3>
-                        <p>Track wash, detail, paint, and mechanic teams.</p>
-                    </div>
-                </article>
-                <article class="action-card" id="customers">
-                    <div class="icon-pill" style="--accent:#ee7113">C</div>
-                    <div>
-                        <h3>Manage customers</h3>
-                        <p>Keep vehicle profiles and contact details current.</p>
-                    </div>
-                </article>
-                <article class="action-card" id="bookings">
-                    <div class="icon-pill" style="--accent:#ff7a90">B</div>
-                    <div>
-                        <h3>Manage bookings</h3>
-                        <p>Review bay schedules and confirm incoming jobs.</p>
-                    </div>
-                </article>
-                <article class="action-card" id="services">
-                    <div class="icon-pill" style="--accent:#b08cff">S</div>
-                    <div>
-                        <h3>Manage services</h3>
-                        <p>Update service catalogs, durations, and pricing.</p>
-                    </div>
                 </article>
             </section>
         </main>

@@ -21,7 +21,9 @@
             <% if (success) { %>
                 <p class="alert success" role="status"><%= success %></p>
             <% } %>
-            <% if (error) { %>
+            <% if (banned) { %>
+                <p class="alert" role="alert">You are banned for violating our policy. Need help <a href="tel:+96181690063">+961 81690063</a></p>
+            <% } else if (error) { %>
                 <p class="alert" role="alert"><%= error %></p>
             <% } %>
 

@@ -18,7 +18,9 @@
             <h2>Log in to Auto<span>Hub</span></h2>
             <p class="lede">Enter your username and password to continue.</p>
 
-            <% if (error) { %>
+            <% if (deactivated) { %>
+                <p class="alert" role="alert">Your account is deactivated. Need help <a href="tel:+96181690063">+961 81690063</a></p>
+            <% } else if (error) { %>
                 <p class="alert" role="alert"><%= error %></p>
             <% } %>
 

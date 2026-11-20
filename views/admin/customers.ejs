@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../partials/favicon') %>
+    <title>Manage Customers | Garage Booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-page">
+    <div class="admin-layout">
+        <%- include('../partials/admin-sidebar', { navActive: 'customers' }) %>
+
+        <main class="workspace">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Administration panel</p>
+                    <h1>Manage customers</h1>
+                </div>
+                <div class="user-chip">
+                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <strong><%= user.fullName %></strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-toolbar">
+                <div class="section-head">
+                    <div>
+                        <h2>Customers</h2>
+                        <p id="customer-count">Showing <%= customers.length %> customer account<%= customers.length === 1 ? '' : 's' %>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <% if (!customers.length) { %>
+                <p class="empty-staff">No customer accounts to show.</p>
+            <% } else { %>
+                <div class="customer-tools">
+                    <input
+                        class="customer-search"
+                        id="customer-search"
+                        type="search"
+                        placeholder="Search by name or email"
+                        autocomplete="off"
+                        aria-label="Search by name or email"
+                    >
+                    <div class="customer-filters" role="group" aria-label="Filter by status">
+                        <button type="button" class="active" data-status-filter="all" aria-pressed="true">All</button>
+                        <button type="button" data-status-filter="active" aria-pressed="false">Active</button>
+                        <button type="button" data-status-filter="banned" aria-pressed="false">Banned</button>
+                    </div>
+                </div>
+                <p class="empty-staff" id="customer-empty" hidden>No customers match this search.</p>
+                <ul class="employee-list" id="customer-list">
+                    <% customers.forEach((customer) => { %>
+                        <li data-name="<%= customer.fullName %>" data-email="<%= customer.email || '' %>" data-status="<%= customer.isActive ? 'active' : 'banned' %>">
+                            <a class="employee-row" href="/admin/customers/<%= customer.id %>">
+                                <div class="avatar"><%= customer.fullName.charAt(0).toUpperCase() %></div>
+                                <div>
+                                    <strong><%= customer.fullName %></strong>
+                                    <small><%= customer.email %></small>
+                                </div>
+                                <% if (customer.isActive) { %>
+                                    <span class="status-pill is-active">Active</span>
+                                <% } else { %>
+                                    <span class="status-pill">Banned</span>
+                                <% } %>
+                            </a>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } %>
+        </main>
+    </div>
+    <script>
+        const search = document.querySelector('#customer-search');
+        const filters = document.querySelectorAll('[data-status-filter]');
+        const rows = document.querySelectorAll('#customer-list li');
+        const empty = document.querySelector('#customer-empty');
+        const count = document.querySelector('#customer-count');
+        let status = 'all';
+
+        const applyCustomerFilter = () => {
+            const query = search.value.trim().toLowerCase();
+            let shown = 0;
+
+            rows.forEach((row) => {
+                const name = (row.dataset.name || '').toLowerCase();
+                const email = (row.dataset.email || '').toLowerCase();
+                const matchesQuery = !query || name.includes(query) || email.includes(query);
+                const matchesStatus = status === 'all' || row.dataset.status === status;
+                const visible = matchesQuery && matchesStatus;
+                row.hidden = !visible;
+                if (visible) shown += 1;
+            });
+
+            empty.hidden = shown !== 0;
+            count.textContent = `Showing ${shown} customer account${shown === 1 ? '' : 's'}.`;
+        };
+
+        if (search && rows.length) {
+            search.addEventListener('input', applyCustomerFilter);
+            filters.forEach((button) => {
+                button.addEventListener('click', () => {
+                    status = button.dataset.statusFilter;
+                    filters.forEach((item) => {
+                        const selected = item === button;
+                        item.classList.toggle('active', selected);
+                        item.setAttribute('aria-pressed', selected ? 'true' : 'false');
+                    });
+                    applyCustomerFilter();
+                });
+            });
+        }
+    </script>
+</body>
+</html>

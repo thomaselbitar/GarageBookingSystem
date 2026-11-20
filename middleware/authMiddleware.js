@@ -1,9 +1,38 @@
+const User = require('../models/User');
+
+const ensureActiveAccount = async (req, res, next) => {
+    if (!req.session.user || req.accountActiveChecked) {
+        return next();
+    }
+
+    req.accountActiveChecked = true;
+    const role = req.session.user.role;
+
+    try {
+        const account = await User.findByPk(req.session.user.id, {
+            attributes: ['isActive']
+        });
+
+        if (account && account.isActive) {
+            return next();
+        }
+
+        return req.session.destroy(() => {
+            res.clearCookie('connect.sid');
+            return res.redirect(role === 'CUSTOMER' ? '/customer/login?banned=1' : '/login?deactivated=1');
+        });
+    } catch (error) {
+        console.error('Account status check failed:', error);
+        return res.status(500).send('Could not verify the account.');
+    }
+};
+
 const requireAuth = (req, res, next) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
 
-    next();
+    return ensureActiveAccount(req, res, next);
 };
 
 const requireCustomerAuth = (req, res, next) => {
@@ -15,7 +44,7 @@ const requireCustomerAuth = (req, res, next) => {
         return res.status(403).send('Access Denied');
     }
 
-    next();
+    return ensureActiveAccount(req, res, next);
 };
 
 const requireRole = (...allowedRoles) => {
@@ -28,15 +57,17 @@ const requireRole = (...allowedRoles) => {
             return res.redirect('/login');
         }
 
-        if (!allowedRoles.includes(req.session.user.role)) {
-            if (req.session.user.role === 'CUSTOMER') {
-                return res.redirect('/customer/dashboard');
+        return ensureActiveAccount(req, res, () => {
+            if (!allowedRoles.includes(req.session.user.role)) {
+                if (req.session.user.role === 'CUSTOMER') {
+                    return res.redirect('/customer/dashboard');
+                }
+
+                return res.status(403).send('Access Denied');
             }
 
-            return res.status(403).send('Access Denied');
-        }
-
-        next();
+            return next();
+        });
     };
 };
 

@@ -26,6 +26,7 @@ const renderAuth = (res, view, data = {}) => {
         error: null,
         success: null,
         email: '',
+        banned: false,
         resendWait: 0,
         ...data
     });
@@ -348,7 +349,10 @@ exports.getLogin = (req, res) => {
         ? 'Your password was updated. You can log in now.'
         : null;
 
-    return renderAuth(res, 'customer/login', { success });
+    return renderAuth(res, 'customer/login', {
+        success,
+        banned: req.query.banned === '1'
+    });
 };
 
 exports.postLogin = async (req, res) => {
@@ -371,7 +375,14 @@ exports.postLogin = async (req, res) => {
             }
         });
 
-        if (!user || !user.isActive || !user.passwordHash) {
+        if (user && !user.isActive) {
+            return renderAuth(res, 'customer/login', {
+                banned: true,
+                email
+            });
+        }
+
+        if (!user || !user.passwordHash) {
             return renderAuth(res, 'customer/login', {
                 error: invalidMessage,
                 email

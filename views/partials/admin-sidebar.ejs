@@ -1,0 +1,16 @@
+<aside class="sidebar">
+    <div class="logo">
+        <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
+        <span>Admin console</span>
+    </div>
+
+    <nav class="nav" aria-label="Admin">
+        <a href="/admin/dashboard" class="<%= navActive === 'overview' ? 'active' : '' %>">Overview</a>
+        <a href="/admin/employees" class="<%= navActive === 'employees' || navActive === 'staff' ? 'active' : '' %>">Manage employees</a>
+        <a href="/admin/customers" class="<%= navActive === 'customers' ? 'active' : '' %>">Manage customers</a>
+    </nav>
+
+    <form class="sidebar-foot" action="/logout" method="POST">
+        <button class="logout-btn" type="submit">Logout</button>
+    </form>
+</aside>
