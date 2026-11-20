@@ -1,16 +1,41 @@
-<aside class="sidebar">
-    <div class="logo">
-        <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
-        <span>Admin console</span>
-    </div>
+<script>document.documentElement.classList.add('js-nav');</script>
+<div class="sidebar-slot">
+    <button class="nav-toggle" type="button" aria-controls="admin-sidebar" aria-expanded="false" aria-label="Open menu">
+        <span class="nav-toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+    <div class="nav-overlay" aria-hidden="true"></div>
+    <aside class="sidebar" id="admin-sidebar">
+        <div class="logo">
+            <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
+            <span>Admin console</span>
+        </div>
+        <button class="nav-close" type="button" aria-label="Close menu">
+            <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+                <path d="M5 5l10 10M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+        </button>
 
-    <nav class="nav" aria-label="Admin">
-        <a href="/admin/dashboard" class="<%= navActive === 'overview' ? 'active' : '' %>">Overview</a>
-        <a href="/admin/employees" class="<%= navActive === 'employees' || navActive === 'staff' ? 'active' : '' %>">Manage employees</a>
-        <a href="/admin/customers" class="<%= navActive === 'customers' ? 'active' : '' %>">Manage customers</a>
-    </nav>
+        <nav class="nav" aria-label="Admin">
+            <a href="/admin/dashboard" class="<%= navActive === 'overview' ? 'active' : '' %>">Overview</a>
+            <a href="/admin/employees" class="<%= navActive === 'employees' || navActive === 'staff' ? 'active' : '' %>">Manage employees</a>
+            <a href="/admin/customers" class="<%= navActive === 'customers' ? 'active' : '' %>">Manage customers</a>
+        </nav>
 
-    <form class="sidebar-foot" action="/logout" method="POST">
-        <button class="logout-btn" type="submit">Logout</button>
-    </form>
-</aside>
+        <div class="sidebar-bottom">
+            <% if (typeof user !== 'undefined' && user && user.fullName) { %>
+                <div class="sidebar-user">
+                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <strong><%= user.fullName %></strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+            <% } %>
+
+            <form class="sidebar-foot" action="/logout" method="POST">
+                <button class="logout-btn" type="submit">Logout</button>
+            </form>
+        </div>
+    </aside>
+</div>
+<script src="/js/admin-nav.js" defer></script>
