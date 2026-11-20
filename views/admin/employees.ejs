@@ -17,14 +17,14 @@
         <main class="workspace">
             <header class="topbar">
                 <div>
-                    <p class="eyebrow">Administration panel</p>
+                    <p class="eyebrow"><%= console.eyebrow %></p>
                     <h1>Manage employees</h1>
                 </div>
                 <div class="user-chip">
                     <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
                     <div>
                         <strong><%= user.fullName %></strong>
-                        <small>Administrator</small>
+                        <small><%= console.roleLabel %></small>
                     </div>
                 </div>
             </header>
@@ -36,12 +36,12 @@
                         <p>Showing <%= selectedRole.label.toLowerCase() %> accounts.</p>
                     </div>
                 </div>
-                <a class="create-staff-link" href="/admin/staff">Create staff</a>
+                <a class="create-staff-link" href="<%= console.base %>/staff">Create staff</a>
             </div>
 
             <nav class="section-nav" aria-label="Employee types">
                 <% staffRoles.forEach((staffRole) => { %>
-                    <a href="/admin/employees?type=<%= staffRole.value %>" class="<%= selectedRole.value === staffRole.value ? 'active' : '' %>">
+                    <a href="<%= console.base %>/employees?type=<%= staffRole.value %>" class="<%= selectedRole.value === staffRole.value ? 'active' : '' %>">
                         <%= staffRole.label %>
                         <span class="count"><%= counts[staffRole.value] %></span>
                     </a>
@@ -54,7 +54,7 @@
                 <ul class="employee-list">
                     <% employees.forEach((employee) => { %>
                         <li>
-                            <a class="employee-row" href="/admin/employees/<%= employee.id %>">
+                            <a class="employee-row" href="<%= console.base %>/employees/<%= employee.id %>">
                                 <div class="avatar"><%= employee.fullName.charAt(0).toUpperCase() %></div>
                                 <div>
                                     <strong><%= employee.fullName %></strong>

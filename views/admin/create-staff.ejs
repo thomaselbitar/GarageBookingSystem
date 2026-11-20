@@ -17,14 +17,14 @@
         <main class="workspace">
             <header class="topbar">
                 <div>
-                    <p class="eyebrow">Administration panel</p>
+                    <p class="eyebrow"><%= console.eyebrow %></p>
                     <h1>Create staff account</h1>
                 </div>
                 <div class="user-chip">
                     <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
                     <div>
                         <strong><%= user.fullName %></strong>
-                        <small>Administrator</small>
+                        <small><%= console.roleLabel %></small>
                     </div>
                 </div>
             </header>
@@ -39,7 +39,7 @@
                     <p class="form-alert" role="alert"><%= formError %></p>
                 <% } %>
 
-                <form class="staff-form" action="/admin/staff" method="POST" autocomplete="off">
+                <form class="staff-form" action="<%= console.base %>/staff" method="POST" autocomplete="off">
                     <div class="staff-form-grid">
                         <div class="field">
                             <label for="fullName">Full name</label>
@@ -84,7 +84,7 @@
             <p>The name and role you entered will not be saved.</p>
             <div class="popup-actions">
                 <button class="popup-cancel" type="button" id="cancel-stay">Keep editing</button>
-                <a class="staff-submit" href="/admin/employees">Leave</a>
+                <a class="staff-submit" href="<%= console.base %>/employees">Leave</a>
             </div>
         </div>
     </div>
@@ -100,7 +100,7 @@
         if (cancelStaff && cancelPopup) {
             cancelStaff.addEventListener('click', () => {
                 if (formIsEmpty()) {
-                    window.location.href = '/admin/employees';
+                    window.location.href = '<%= console.base %>/employees';
                     return;
                 }
 

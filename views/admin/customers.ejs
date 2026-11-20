@@ -17,14 +17,14 @@
         <main class="workspace">
             <header class="topbar">
                 <div>
-                    <p class="eyebrow">Administration panel</p>
+                    <p class="eyebrow"><%= console.eyebrow %></p>
                     <h1>Manage customers</h1>
                 </div>
                 <div class="user-chip">
                     <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
                     <div>
                         <strong><%= user.fullName %></strong>
-                        <small>Administrator</small>
+                        <small><%= console.roleLabel %></small>
                     </div>
                 </div>
             </header>
@@ -60,7 +60,7 @@
                 <ul class="employee-list" id="customer-list">
                     <% customers.forEach((customer) => { %>
                         <li data-name="<%= customer.fullName %>" data-email="<%= customer.email || '' %>" data-status="<%= customer.isActive ? 'active' : 'banned' %>">
-                            <a class="employee-row" href="/admin/customers/<%= customer.id %>">
+                            <a class="employee-row" href="<%= console.base %>/customers/<%= customer.id %>">
                                 <div class="avatar"><%= customer.fullName.charAt(0).toUpperCase() %></div>
                                 <div>
                                     <strong><%= customer.fullName %></strong>

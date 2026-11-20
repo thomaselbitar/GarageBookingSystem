@@ -24,8 +24,17 @@ const staffAccountValidators = [
         }),
     body('role')
         .customSanitizer((value) => (typeof value === 'string' ? value.trim() : ''))
-        .isIn(STAFF_ROLE_VALUES)
-        .withMessage('Select a staff role.')
+        .custom((value, { req }) => {
+            const allowed = req.console && req.console.manageableRoles
+                ? req.console.manageableRoles
+                : STAFF_ROLE_VALUES;
+
+            if (!allowed.includes(value)) {
+                throw new Error('Select a staff role.');
+            }
+
+            return true;
+        })
 ];
 
 const employeePasswordValidators = [

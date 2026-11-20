@@ -84,6 +84,10 @@ const redirectIfAuthenticated = (req, res, next) => {
         return res.redirect('/admin/dashboard');
     }
 
+    if (req.session.user.role === 'MANAGER') {
+        return res.redirect('/manager/dashboard');
+    }
+
     return res.redirect('/dashboard');
 };
 

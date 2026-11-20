@@ -330,10 +330,17 @@ const run = async () => {
             method: 'POST',
             body: form({ username: username.value, password: password.value })
         });
-        const expectedLocation = account.role === 'ADMIN' ? '/admin/dashboard' : '/dashboard';
+        const expectedLocation = account.role === 'ADMIN'
+            ? '/admin/dashboard'
+            : account.role === 'MANAGER'
+                ? '/manager/dashboard'
+                : '/dashboard';
+        const landedOnManagerConsole = login.location.includes('/manager/');
         record(
             `${account.key} can log in with the generated credentials`,
-            login.status === 302 && login.location.includes(expectedLocation)
+            login.status === 302 &&
+                login.location.includes(expectedLocation) &&
+                (account.role === 'MANAGER' || !landedOnManagerConsole)
         );
 
         const wrong = await request('/login', {
@@ -584,9 +591,54 @@ const run = async () => {
 
         record('Manager cannot open the admin dashboard', page.status === 403);
         record('Manager cannot open staff creation routes', shortcut.status === 403 && directory.status === 403 && employeePage.status === 403 && createdPage.status === 403);
-        record('Manager cannot create a staff account', post.status === 403 && after === before);
+        record('Manager cannot create a staff account from the admin console', post.status === 403 && after === before);
+
+        const otherManager = made.find((account) => account.key === 'manager-2');
+        const managerHome = await request('/manager/dashboard', { cookie: manager.loginCookie });
+        const managerEmployees = await request('/manager/employees?type=MANAGER', { cookie: manager.loginCookie });
+        const managerSelf = await request(`/manager/employees/${managerRecord.id}`, { cookie: manager.loginCookie });
+        const managerCreate = await request('/manager/staff', { cookie: manager.loginCookie });
+        const seededAdmin = await User.findOne({ where: { username: process.env.ADMIN_USERNAME } });
+        const hiddenAdmin = seededAdmin
+            ? await request(`/manager/employees/${seededAdmin.id}`, { cookie: manager.loginCookie })
+            : null;
+        const blockedAdminName = `Blocked Admin ${marker}`;
+        const beforeAdmin = await User.count({ where: { fullName: blockedAdminName } });
+        const createAdminAttempt = await request('/manager/staff', {
+            method: 'POST',
+            cookie: manager.loginCookie,
+            body: form({ fullName: blockedAdminName, role: 'ADMIN' })
+        });
+
+        record(
+            'Manager opens the same dashboard',
+            managerHome.status === 200 &&
+                managerHome.text.includes('Manager console') &&
+                managerHome.text.includes('href="/manager/employees"') &&
+                managerHome.text.includes('href="/manager/customers"') &&
+                managerHome.text.includes('You are logged in as Manager') &&
+                managerHome.text.includes('Open bookings')
+        );
+        record(
+            'Manager employee list hides admins and the signed-in manager',
+            managerEmployees.status === 200 &&
+                !managerEmployees.text.includes('type=ADMIN') &&
+                !managerEmployees.text.includes(`<small>${manager.username}</small>`) &&
+                (!otherManager || managerEmployees.text.includes(`<small>${otherManager.username}</small>`)) &&
+                managerSelf.status === 302 &&
+                managerSelf.location.includes('/manager/employees') &&
+                hiddenAdmin &&
+                hiddenAdmin.status === 404 &&
+                managerCreate.status === 200 &&
+                !managerCreate.text.includes('value="ADMIN"') &&
+                managerCreate.text.includes('value="MANAGER"') &&
+                createAdminAttempt.status === 303 &&
+                createAdminAttempt.location.includes('/manager/staff') &&
+                !createAdminAttempt.location.includes('/created') &&
+                await User.count({ where: { fullName: blockedAdminName } }) === beforeAdmin
+        );
     } else {
-        record('Manager cannot create a staff account', false, 'manager login was not available');
+        record('Manager cannot create a staff account from the admin console', false, 'manager login was not available');
     }
 
     const customerPassword = `CustomerPass${marker.slice(-4)}`;
@@ -648,7 +700,14 @@ const run = async () => {
     );
     if (manager && manager.loginCookie) {
         const deniedCustomers = await request('/admin/customers', { cookie: manager.loginCookie });
+        const managerCustomers = await request('/manager/customers', { cookie: manager.loginCookie });
         record('Manager cannot open customers', deniedCustomers.status === 403);
+        record(
+            'Manager can open customers from the manager console',
+            managerCustomers.status === 200 &&
+                managerCustomers.text.includes('Manage customers') &&
+                managerCustomers.text.includes(customer.fullName)
+        );
     }
 
     const ban = await request(`/admin/customers/${customer.id}/status`, {

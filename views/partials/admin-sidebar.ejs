@@ -7,7 +7,7 @@
     <aside class="sidebar" id="admin-sidebar">
         <div class="logo">
             <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
-            <span>Admin console</span>
+            <span><%= console.title %></span>
         </div>
         <button class="nav-close" type="button" aria-label="Close menu">
             <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
@@ -15,10 +15,10 @@
             </svg>
         </button>
 
-        <nav class="nav" aria-label="Admin">
-            <a href="/admin/dashboard" class="<%= navActive === 'overview' ? 'active' : '' %>">Overview</a>
-            <a href="/admin/employees" class="<%= navActive === 'employees' || navActive === 'staff' ? 'active' : '' %>">Manage employees</a>
-            <a href="/admin/customers" class="<%= navActive === 'customers' ? 'active' : '' %>">Manage customers</a>
+        <nav class="nav" aria-label="<%= console.navLabel %>">
+            <a href="<%= console.base %>/dashboard" class="<%= navActive === 'overview' ? 'active' : '' %>">Overview</a>
+            <a href="<%= console.base %>/employees" class="<%= navActive === 'employees' || navActive === 'staff' ? 'active' : '' %>">Manage employees</a>
+            <a href="<%= console.base %>/customers" class="<%= navActive === 'customers' ? 'active' : '' %>">Manage customers</a>
         </nav>
 
         <div class="sidebar-bottom">
@@ -27,7 +27,7 @@
                     <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
                     <div>
                         <strong><%= user.fullName %></strong>
-                        <small>Administrator</small>
+                        <small><%= console.roleLabel %></small>
                     </div>
                 </div>
             <% } %>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('../partials/favicon') %>
-    <title>Admin Dashboard | Garage Booking</title>
+    <title><%= console.pageTitle %> Dashboard | Garage Booking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
@@ -17,21 +17,21 @@
         <main class="workspace">
             <header class="topbar">
                 <div>
-                    <p class="eyebrow">Administration panel</p>
+                    <p class="eyebrow"><%= console.eyebrow %></p>
                     <h1>Garage booking system</h1>
                 </div>
                 <div class="user-chip">
                     <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
                     <div>
                         <strong><%= user.fullName %></strong>
-                        <small>Administrator</small>
+                        <small><%= console.roleLabel %></small>
                     </div>
                 </div>
             </header>
 
             <section class="welcome-banner">
                 <h2>Welcome back, <%= user.fullName %>.</h2>
-                <p>You are logged in as Administrator. Use this console to keep crews, customers, and bookings in sync.</p>
+                <p>You are logged in as <%= console.roleLabel %>. Use this console to keep crews, customers, and bookings in sync.</p>
             </section>
 
             <section class="stats" aria-label="Dashboard overview">

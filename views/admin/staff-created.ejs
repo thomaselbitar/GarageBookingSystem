@@ -17,14 +17,14 @@
         <main class="workspace">
             <header class="topbar">
                 <div>
-                    <p class="eyebrow">Administration panel</p>
+                    <p class="eyebrow"><%= console.eyebrow %></p>
                     <h1>Garage booking system</h1>
                 </div>
                 <div class="user-chip">
                     <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
                     <div>
                         <strong><%= user.fullName %></strong>
-                        <small>Administrator</small>
+                        <small><%= console.roleLabel %></small>
                     </div>
                 </div>
             </header>
@@ -78,7 +78,7 @@
                     <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
 
                     <div class="result-actions">
-                        <a class="secondary" href="/admin/employees?type=<%= account.role %>">
+                        <a class="secondary" href="<%= console.base %>/employees?type=<%= account.role %>">
                             <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
                                 <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -96,13 +96,13 @@
                 <section class="staff-panel">
                     <p class="secure-note">This page does not keep the password. Use the copy you already shared, or create another account only if those credentials were lost.</p>
                     <div class="result-actions">
-                        <a class="secondary" href="/admin/employees<%= backRole ? '?type=' + backRole : '' %>">
+                        <a class="secondary" href="<%= console.base %>/employees<%= backRole ? '?type=' + backRole : '' %>">
                             <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
                                 <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             Back
                         </a>
-                        <a class="primary" href="/admin/staff">Create another account</a>
+                        <a class="primary" href="<%= console.base %>/staff">Create another account</a>
                     </div>
                 </section>
             <% } %>

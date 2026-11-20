@@ -12,6 +12,16 @@ const {
 
 const BCRYPT_ROUNDS = 10;
 
+const consoleBase = (req) => (req.console && req.console.base) || '/admin';
+
+const consoleStaffRoles = (req) => (
+    req.console && req.console.staffRoles ? req.console.staffRoles : STAFF_ROLES
+);
+
+const consoleManageableRoles = (req) => (
+    req.console && req.console.manageableRoles ? req.console.manageableRoles : STAFF_ROLE_VALUES
+);
+
 const formValuesFrom = (body = {}) => ({
     fullName: typeof body.fullName === 'string'
         ? body.fullName.trim().replace(/\s+/g, ' ')
@@ -28,7 +38,7 @@ const saveFormError = (req, res, formError, formValues) => {
             return res.status(500).send('Could not save the form message.');
         }
 
-        return res.redirect(303, '/admin/staff');
+        return res.redirect(303, `${consoleBase(req)}/staff`);
     });
 };
 
@@ -39,7 +49,7 @@ const renderCreateStaff = (req, res) => {
     const send = () => {
         res.render('admin/create-staff', {
             user: req.session.user,
-            staffRoles: STAFF_ROLES,
+            staffRoles: consoleStaffRoles(req),
             formError: flash ? flash.formError : null,
             formValues: flash ? flash.formValues : { fullName: '', role: '' }
         });
@@ -84,7 +94,7 @@ const loadManagedEmployee = async (req) => {
         attributes: ['id', 'fullName', 'username', 'role', 'isActive', 'passwordHash'],
         where: {
             id,
-            role: STAFF_ROLE_VALUES
+            role: consoleManageableRoles(req)
         }
     });
 
@@ -148,7 +158,7 @@ exports.getEmployee = async (req, res) => {
         const employee = await loadManagedEmployee(req);
 
         if (employee === 'self') {
-            return res.redirect('/admin/employees');
+            return res.redirect(`${consoleBase(req)}/employees`);
         }
 
         if (!employee) {
@@ -167,7 +177,7 @@ exports.updateEmployeeStatus = async (req, res) => {
         const employee = await loadManagedEmployee(req);
 
         if (employee === 'self') {
-            return res.redirect('/admin/employees');
+            return res.redirect(`${consoleBase(req)}/employees`);
         }
 
         if (!employee) {
@@ -182,7 +192,7 @@ exports.updateEmployeeStatus = async (req, res) => {
             isActive: req.body.active === 'true'
         });
 
-        return res.redirect(303, `/admin/employees/${employee.id}`);
+        return res.redirect(303, `${consoleBase(req)}/employees/${employee.id}`);
     } catch (error) {
         console.error('Could not update employee status:', error);
         return res.status(500).send('Could not update the account status.');
@@ -205,14 +215,14 @@ exports.deleteEmployee = async (req, res) => {
         const employee = await loadManagedEmployee(req);
 
         if (employee === 'self') {
-            return res.redirect('/admin/employees');
+            return res.redirect(`${consoleBase(req)}/employees`);
         }
 
         if (!employee) {
             req.session.employeeDeleteError = {
                 message: 'This account could not be deleted.'
             };
-            return saveDeleteResult(req, res, '/admin/employees');
+            return saveDeleteResult(req, res, `${consoleBase(req)}/employees`);
         }
 
         const role = employee.role;
@@ -220,7 +230,7 @@ exports.deleteEmployee = async (req, res) => {
         await employee.destroy();
         delete req.session.employeeDeleteError;
         req.session.employeeDeleteNotice = { role, fullName };
-        return saveDeleteResult(req, res, `/admin/employees?type=${role}`);
+        return saveDeleteResult(req, res, `${consoleBase(req)}/employees?type=${role}`);
     } catch (error) {
         console.error('Could not delete employee:', error);
         const id = Number(req.params.id);
@@ -228,7 +238,9 @@ exports.deleteEmployee = async (req, res) => {
             id: Number.isInteger(id) ? id : null,
             message: 'This account could not be deleted.'
         };
-        const redirectTo = Number.isInteger(id) ? `/admin/employees/${id}` : '/admin/employees';
+        const redirectTo = Number.isInteger(id)
+            ? `${consoleBase(req)}/employees/${id}`
+            : `${consoleBase(req)}/employees`;
         return saveDeleteResult(req, res, redirectTo);
     }
 };
@@ -238,7 +250,7 @@ exports.updateEmployeePassword = async (req, res) => {
         const employee = await loadManagedEmployee(req);
 
         if (employee === 'self') {
-            return res.redirect('/admin/employees');
+            return res.redirect(`${consoleBase(req)}/employees`);
         }
 
         if (!employee) {
@@ -258,7 +270,7 @@ exports.updateEmployeePassword = async (req, res) => {
                     return res.status(500).send('Could not save the form message.');
                 }
 
-                return res.redirect(303, `/admin/employees/${employee.id}`);
+                return res.redirect(303, `${consoleBase(req)}/employees/${employee.id}`);
             });
         }
 
@@ -275,7 +287,7 @@ exports.updateEmployeePassword = async (req, res) => {
                 return res.status(500).send('The password was updated, but the confirmation could not be shown.');
             }
 
-            return res.redirect(303, `/admin/employees/${employee.id}`);
+            return res.redirect(303, `${consoleBase(req)}/employees/${employee.id}`);
         });
     } catch (error) {
         console.error('Could not update employee password:', error);
@@ -284,20 +296,21 @@ exports.updateEmployeePassword = async (req, res) => {
 };
 
 exports.getEmployees = async (req, res) => {
+    const roles = consoleStaffRoles(req);
     const requested = typeof req.query.type === 'string' ? req.query.type.trim().toUpperCase() : '';
-    const selectedRole = roleByValue(requested) || STAFF_ROLES[0];
+    const selectedRole = roles.find((role) => role.value === requested) || roles[0];
 
     try {
         const staff = await User.findAll({
             attributes: ['id', 'fullName', 'username', 'role', 'isActive'],
-            where: { role: STAFF_ROLE_VALUES },
+            where: { role: consoleManageableRoles(req) },
             order: [['fullName', 'ASC'], ['username', 'ASC']]
         });
         const currentUserId = req.session.user && req.session.user.id;
         const visibleStaff = staff.filter((employee) => employee.id !== currentUserId);
 
         const counts = {};
-        STAFF_ROLES.forEach((role) => {
+        roles.forEach((role) => {
             counts[role.value] = 0;
         });
         visibleStaff.forEach((employee) => {
@@ -318,7 +331,7 @@ exports.getEmployees = async (req, res) => {
 
         const send = () => res.render('admin/employees', {
             user: req.session.user,
-            staffRoles: STAFF_ROLES,
+            staffRoles: roles,
             selectedRole,
             counts,
             employees: visibleStaff.filter((employee) => employee.role === selectedRole.value),
@@ -410,7 +423,7 @@ exports.createStaffAccount = async (req, res) => {
                 });
             }
 
-            return res.redirect(303, '/admin/staff/created');
+            return res.redirect(303, `${consoleBase(req)}/staff/created`);
         });
     } catch (error) {
         console.error('Staff account creation failed:', error);

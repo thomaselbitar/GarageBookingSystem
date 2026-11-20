@@ -17,19 +17,19 @@
         <main class="workspace">
             <header class="topbar">
                 <div>
-                    <p class="eyebrow">Administration panel</p>
+                    <p class="eyebrow"><%= console.eyebrow %></p>
                     <h1><%= customer.fullName %></h1>
                 </div>
                 <div class="user-chip">
                     <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
                     <div>
                         <strong><%= user.fullName %></strong>
-                        <small>Administrator</small>
+                        <small><%= console.roleLabel %></small>
                     </div>
                 </div>
             </header>
 
-            <a class="back-link" href="/admin/customers">
+            <a class="back-link" href="<%= console.base %>/customers">
                 <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
                     <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -80,7 +80,7 @@
         <div class="success-popup-card">
             <h2 id="status-popup-title">Ban customer</h2>
             <p id="status-popup-text">This customer will not be able to log in until the account is unbanned.</p>
-            <form action="/admin/customers/<%= customer.id %>/status" method="POST">
+            <form action="<%= console.base %>/customers/<%= customer.id %>/status" method="POST">
                 <input type="hidden" name="active" id="status-value" value="false">
                 <div class="popup-actions">
                     <button class="popup-cancel" type="button" id="status-cancel">Cancel</button>

@@ -1,5 +1,7 @@
 const User = require('../models/User');
 
+const consoleBase = (req) => (req.console && req.console.base) || '/admin';
+
 const loadCustomer = async (req) => {
     const id = Number(req.params.id);
     if (!Number.isInteger(id)) {
@@ -75,7 +77,7 @@ exports.updateCustomerStatus = async (req, res) => {
             isActive: req.body.active === 'true'
         });
 
-        return res.redirect(303, `/admin/customers/${customer.id}`);
+        return res.redirect(303, `${consoleBase(req)}/customers/${customer.id}`);
     } catch (error) {
         console.error('Could not update customer status:', error);
         return res.status(500).send('Could not update the account status.');
