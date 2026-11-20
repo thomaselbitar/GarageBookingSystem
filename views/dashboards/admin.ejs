@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Garage Booking</title>
+</head>
+<body>
+
+    <header>
+        <h1>Garage Booking System</h1>
+        <p>Administration Panel</p>
+    </header>
+
+    <main>
+        <h2>Welcome, <%= user.fullName %>!</h2>
+        <p>You are logged in as <strong>Administrator</strong>.</p>
+
+        <section>
+            <h3>Dashboard Overview</h3>
+            <p>Manage the garage system from here.</p>
+        </section>
+
+        <section>
+            <h3>Management</h3>
+            <ul>
+                <li>Manage Managers</li>
+                <li>Manage Employees</li>
+                <li>Manage Customers</li>
+                <li>Manage Bookings</li>
+                <li>Manage Services</li>
+            </ul>
+        </section>
+
+        <form action="/logout" method="POST">
+            <button type="submit">Logout</button>
+        </form>
+    </main>
+
+</body>
+</html>
