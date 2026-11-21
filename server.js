@@ -10,6 +10,7 @@ const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
 const customerAuthRoutes = require('./routes/customerAuthRoutes');
 const staffAccountRoutes = require('./routes/staffAccountRoutes');
+const employeeRoutes = require('./routes/employeeRoutes');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(session({
 app.use('/', authRoutes);
 app.use('/', customerAuthRoutes);
 app.use('/', staffAccountRoutes);
+app.use('/', employeeRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 3000;

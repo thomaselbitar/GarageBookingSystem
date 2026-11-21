@@ -1,6 +1,7 @@
 
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const { homeForRole } = require('../middleware/authMiddleware');
 
 // Display login page
 exports.getLogin = (req, res) => {
@@ -70,15 +71,7 @@ exports.postLogin = async (req, res) => {
                     return res.status(500).send('Could not save session.');
                 }
 
-                if (user.role === 'ADMIN') {
-                    return res.redirect('/admin/dashboard');
-                }
-
-                if (user.role === 'MANAGER') {
-                    return res.redirect('/manager/dashboard');
-                }
-
-                res.redirect('/dashboard');
+                return res.redirect(homeForRole(user.role));
             });
         });
 

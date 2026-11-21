@@ -1,5 +1,27 @@
 const User = require('../models/User');
 
+const EMPLOYEE_ROLES = ['WASHING', 'DETAILING', 'PAINTING', 'MECHANIC'];
+
+const homeForRole = (role) => {
+    if (role === 'CUSTOMER') {
+        return '/customer/dashboard';
+    }
+
+    if (role === 'ADMIN') {
+        return '/admin/dashboard';
+    }
+
+    if (role === 'MANAGER') {
+        return '/manager/dashboard';
+    }
+
+    if (EMPLOYEE_ROLES.includes(role)) {
+        return '/employee/dashboard';
+    }
+
+    return '/dashboard';
+};
+
 const ensureActiveAccount = async (req, res, next) => {
     if (!req.session.user || req.accountActiveChecked) {
         return next();
@@ -76,22 +98,12 @@ const redirectIfAuthenticated = (req, res, next) => {
         return next();
     }
 
-    if (req.session.user.role === 'CUSTOMER') {
-        return res.redirect('/customer/dashboard');
-    }
-
-    if (req.session.user.role === 'ADMIN') {
-        return res.redirect('/admin/dashboard');
-    }
-
-    if (req.session.user.role === 'MANAGER') {
-        return res.redirect('/manager/dashboard');
-    }
-
-    return res.redirect('/dashboard');
+    return res.redirect(homeForRole(req.session.user.role));
 };
 
 module.exports = {
+    EMPLOYEE_ROLES,
+    homeForRole,
     requireAuth,
     requireCustomerAuth,
     requireRole,
