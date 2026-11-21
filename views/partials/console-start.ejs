@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('./favicon') %>
+    <title><%= documentTitle %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/console.css">
+</head>
+<body class="console-page">
+    <div class="console-layout">
+        <%- include('./console-sidebar', { navActive: navActive }) %>
+
+        <main class="workspace">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow"><%= console.eyebrow %></p>
+                    <h1><%= pageHeading %></h1>
+                </div>
+                <div class="user-chip">
+                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <strong><%= user.fullName %></strong>
+                        <small><%= console.roleLabel %></small>
+                    </div>
+                </div>
+            </header>

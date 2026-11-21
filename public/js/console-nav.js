@@ -1,7 +1,59 @@
 (() => {
+    const profileMenu = document.querySelector('.profile-menu');
+    const profileTrigger = document.querySelector('.profile-trigger');
+    const profileDropdown = document.querySelector('#profile-dropdown');
+
+    if (profileMenu && profileTrigger && profileDropdown) {
+        const hideProfileDropdown = () => {
+            if (!profileMenu.classList.contains('is-open')) {
+                profileDropdown.hidden = true;
+            }
+        };
+
+        const setProfileOpen = (open) => {
+            profileTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+            if (open) {
+                profileDropdown.hidden = false;
+                window.requestAnimationFrame(() => {
+                    profileMenu.classList.add('is-open');
+                });
+                return;
+            }
+
+            if (!profileMenu.classList.contains('is-open')) {
+                return;
+            }
+
+            profileMenu.classList.remove('is-open');
+            profileDropdown.addEventListener('transitionend', hideProfileDropdown, { once: true });
+            window.setTimeout(hideProfileDropdown, 220);
+        };
+
+        profileTrigger.addEventListener('click', (event) => {
+            event.stopPropagation();
+            setProfileOpen(!profileMenu.classList.contains('is-open'));
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!profileMenu.contains(event.target)) {
+                setProfileOpen(false);
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && profileMenu.classList.contains('is-open')) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                setProfileOpen(false);
+                profileTrigger.focus();
+            }
+        });
+    }
+
     const root = document.documentElement;
     const toggle = document.querySelector('.nav-toggle');
-    const sidebar = document.querySelector('#admin-sidebar');
+    const sidebar = document.querySelector('#console-sidebar');
     const overlay = document.querySelector('.nav-overlay');
     const closeButton = document.querySelector('.nav-close');
     const workspace = document.querySelector('.workspace');
@@ -64,7 +116,7 @@
         toggle.setAttribute('aria-label', 'Close menu');
         sidebar.setAttribute('role', 'dialog');
         sidebar.setAttribute('aria-modal', 'true');
-        sidebar.setAttribute('aria-label', 'Admin menu');
+        sidebar.setAttribute('aria-label', sidebar.getAttribute('data-menu-label') || 'Menu');
         sidebar.removeAttribute('aria-hidden');
         overlay.setAttribute('aria-hidden', 'false');
         setInert(true);

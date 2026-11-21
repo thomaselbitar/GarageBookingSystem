@@ -1,33 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%- include('../partials/favicon') %>
-    <title>Manage Customers | Garage Booking</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/admin.css">
-</head>
-<body class="admin-page">
-    <div class="admin-layout">
-        <%- include('../partials/admin-sidebar', { navActive: 'customers' }) %>
-
-        <main class="workspace">
-            <header class="topbar">
-                <div>
-                    <p class="eyebrow"><%= console.eyebrow %></p>
-                    <h1>Manage customers</h1>
-                </div>
-                <div class="user-chip">
-                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
-                    <div>
-                        <strong><%= user.fullName %></strong>
-                        <small><%= console.roleLabel %></small>
-                    </div>
-                </div>
-            </header>
+<%- include('../partials/console-start', {
+    documentTitle: 'Manage Customers | Garage Booking',
+    navActive: 'customers',
+    pageHeading: 'Manage customers'
+}) %>
 
             <div class="page-toolbar">
                 <div class="section-head">
@@ -76,8 +51,8 @@
                     <% }) %>
                 </ul>
             <% } %>
-        </main>
-    </div>
+
+<%- include('../partials/console-end') %>
     <script>
         const search = document.querySelector('#customer-search');
         const filters = document.querySelectorAll('[data-status-filter]');
@@ -119,5 +94,4 @@
             });
         }
     </script>
-</body>
-</html>
+<%- include('../partials/console-close') %>

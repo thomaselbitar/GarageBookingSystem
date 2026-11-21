@@ -838,6 +838,115 @@ const run = async () => {
         record('Admin can delete a staff account', false, 'washing account was not available');
     }
 
+    const profilePassword = `ProfilePass${marker.slice(-4)}`;
+    const profileAdmin = await User.create({
+        fullName: `Profile ${marker}`,
+        username: `admin.profile${marker.slice(-6)}`,
+        passwordHash: await bcrypt.hash('OldProfile1', 10),
+        role: 'ADMIN',
+        isActive: true
+    });
+    createdIds.push(profileAdmin.id);
+
+    const profileLogin = await request('/login', {
+        method: 'POST',
+        body: form({ username: profileAdmin.username, password: 'OldProfile1' })
+    });
+    const profileHome = await request('/admin/dashboard', { cookie: profileLogin.cookie });
+    record(
+        'Admin can open the profile menu',
+        profileLogin.status === 302 &&
+            profileHome.status === 200 &&
+            profileHome.text.includes('class="profile-menu"') &&
+            profileHome.text.includes('class="sidebar-user profile-trigger"') &&
+            profileHome.text.includes('href="/admin/profile"') &&
+            profileHome.text.includes('>Profile<')
+    );
+
+    const profilePage = await request('/admin/profile', { cookie: profileHome.cookie || profileLogin.cookie });
+    record(
+        'Admin can view their username and profile information',
+        profilePage.status === 200 &&
+            profilePage.text.includes(profileAdmin.fullName) &&
+            profilePage.text.includes(profileAdmin.username) &&
+            profilePage.text.includes('value="Admin"') &&
+            profilePage.text.includes('name="currentPassword"') &&
+            !profilePage.text.includes('passwordHash')
+    );
+
+    const wrongPassword = await request('/admin/profile/password', {
+        method: 'POST',
+        cookie: profilePage.cookie || profileLogin.cookie,
+        body: form({
+            currentPassword: 'wrong-password',
+            password: profilePassword,
+            confirmPassword: profilePassword
+        })
+    });
+    const wrongPage = wrongPassword.status === 303
+        ? await request(wrongPassword.location, { cookie: wrongPassword.cookie })
+        : wrongPassword;
+    const unchanged = await User.findByPk(profileAdmin.id);
+    record(
+        'Incorrect current password is rejected',
+        wrongPassword.status === 303 &&
+            wrongPage.text.includes('Current password is incorrect.') &&
+            await bcrypt.compare('OldProfile1', unchanged.passwordHash)
+    );
+
+    const changedPassword = await request('/admin/profile/password', {
+        method: 'POST',
+        cookie: wrongPage.cookie || profileLogin.cookie,
+        body: form({
+            currentPassword: 'OldProfile1',
+            password: profilePassword,
+            confirmPassword: profilePassword
+        })
+    });
+    const changedPage = changedPassword.status === 303
+        ? await request(changedPassword.location, { cookie: changedPassword.cookie })
+        : changedPassword;
+    const updatedProfile = await User.findByPk(profileAdmin.id);
+    const newLogin = await request('/login', {
+        method: 'POST',
+        body: form({ username: profileAdmin.username, password: profilePassword })
+    });
+    record(
+        'Admin can change their own password',
+        changedPassword.status === 303 &&
+            changedPage.text.includes('Password updated') &&
+            updatedProfile.username === profileAdmin.username &&
+            updatedProfile.role === 'ADMIN' &&
+            await bcrypt.compare(profilePassword, updatedProfile.passwordHash) &&
+            newLogin.status === 302 &&
+            newLogin.location.includes('/admin/dashboard')
+    );
+
+    if (manager && manager.loginCookie) {
+        const managerProfile = await request('/admin/profile', { cookie: manager.loginCookie });
+        const managerPassword = await request('/admin/profile/password', {
+            method: 'POST',
+            cookie: manager.loginCookie,
+            body: form({
+                currentPassword: 'OldProfile1',
+                password: profilePassword,
+                confirmPassword: profilePassword
+            })
+        });
+        const managerHome = await request('/manager/dashboard', { cookie: manager.loginCookie });
+        record(
+            'Manager cannot see or access the admin profile',
+            managerProfile.status === 403 &&
+                managerPassword.status === 403 &&
+                managerHome.status === 200 &&
+                !managerHome.text.includes('profile-menu') &&
+                !managerHome.text.includes('/admin/profile') &&
+                managerHome.text.includes('Logout')
+        );
+    } else {
+        record('Manager cannot see or access the admin profile', false, 'manager login was not available');
+    }
+
     const logout = await request('/logout', {
         method: 'POST',
         cookie: adminAgain.cookie

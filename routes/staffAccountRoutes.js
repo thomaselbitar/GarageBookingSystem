@@ -3,6 +3,7 @@ const router = express.Router();
 
 const staffAccountController = require('../controllers/staffAccountController');
 const customerAdminController = require('../controllers/customerAdminController');
+const adminProfileController = require('../controllers/adminProfileController');
 const { requireAuth, requireRole } = require('../middleware/authMiddleware');
 const {
     STAFF_ROLES,
@@ -10,6 +11,7 @@ const {
 } = require('../services/staffAccountService');
 const {
     staffAccountValidators,
+    currentPasswordValidator,
     employeePasswordValidators
 } = require('../validators/staffAccountValidators');
 
@@ -90,5 +92,14 @@ const registerConsole = (base, guard) => {
 
 registerConsole('/admin', adminOnly);
 registerConsole('/manager', managerOnly);
+
+router.get('/admin/profile', adminOnly, adminProfileController.getProfile);
+router.post(
+    '/admin/profile/password',
+    adminOnly,
+    currentPasswordValidator,
+    employeePasswordValidators,
+    adminProfileController.updatePassword
+);
 
 module.exports = router;

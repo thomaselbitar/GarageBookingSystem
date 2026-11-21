@@ -47,7 +47,7 @@ const renderCreateStaff = (req, res) => {
     delete req.session.staffFormError;
 
     const send = () => {
-        res.render('admin/create-staff', {
+        res.render('console/create-staff', {
             user: req.session.user,
             staffRoles: consoleStaffRoles(req),
             formError: flash ? flash.formError : null,
@@ -75,7 +75,7 @@ const preventCaching = (res) => {
 };
 
 exports.getDashboard = (req, res) => {
-    res.render('dashboards/admin', {
+    res.render('console/dashboard', {
         user: req.session.user
     });
 };
@@ -130,7 +130,7 @@ const renderEmployee = (req, res, employee) => {
 
     const send = () => {
         const role = roleByValue(employee.role);
-        res.render('admin/employee', {
+        res.render('console/employee', {
             user: req.session.user,
             employee: employeeProfile(employee),
             roleLabel: role ? role.label : employee.role,
@@ -329,7 +329,7 @@ exports.getEmployees = async (req, res) => {
             delete req.session.employeeDeleteError;
         }
 
-        const send = () => res.render('admin/employees', {
+        const send = () => res.render('console/employees', {
             user: req.session.user,
             staffRoles: roles,
             selectedRole,
@@ -417,7 +417,7 @@ exports.createStaffAccount = async (req, res) => {
             if (err) {
                 console.error('Could not store new staff credentials in session:', err);
                 preventCaching(res);
-                return res.render('admin/staff-created', {
+                return res.render('console/staff-created', {
                     user: req.session.user,
                     account: req.session.createdStaffAccount
                 });
@@ -448,7 +448,7 @@ exports.getCreatedStaffAccount = (req, res) => {
 
     const send = () => {
         preventCaching(res);
-        return res.render('admin/staff-created', {
+        return res.render('console/staff-created', {
             user: req.session.user,
             account,
             backRole

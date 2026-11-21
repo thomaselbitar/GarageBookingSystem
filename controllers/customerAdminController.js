@@ -35,7 +35,7 @@ exports.getCustomers = async (req, res) => {
             order: [['fullName', 'ASC'], ['email', 'ASC']]
         });
 
-        return res.render('admin/customers', {
+        return res.render('console/customers', {
             user: req.session.user,
             customers
         });
@@ -52,7 +52,7 @@ exports.getCustomer = async (req, res) => {
             return res.status(404).send('Customer not found.');
         }
 
-        return res.render('admin/customer', {
+        return res.render('console/customer', {
             user: req.session.user,
             customer: customerProfile(customer)
         });

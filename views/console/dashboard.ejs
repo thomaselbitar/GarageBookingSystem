@@ -1,0 +1,32 @@
+<%- include('../partials/console-start', {
+    documentTitle: console.pageTitle + ' Dashboard | Garage Booking',
+    navActive: 'overview',
+    pageHeading: 'Garage booking system'
+}) %>
+
+            <section class="welcome-banner">
+                <h2>Welcome back, <%= user.fullName %>.</h2>
+                <p>You are logged in as <%= console.roleLabel %>. Use this console to keep crews, customers, and bookings in sync.</p>
+            </section>
+
+            <section class="stats" aria-label="Dashboard overview">
+                <article class="stat-card" style="--accent:#ee7113">
+                    <p>Open bookings</p>
+                    <strong>18</strong>
+                </article>
+                <article class="stat-card" style="--accent:#3ecfbf">
+                    <p>Active staff</p>
+                    <strong>12</strong>
+                </article>
+                <article class="stat-card" style="--accent:#6ea8ff">
+                    <p>Customers</p>
+                    <strong>64</strong>
+                </article>
+                <article class="stat-card" style="--accent:#b08cff">
+                    <p>Services live</p>
+                    <strong>5</strong>
+                </article>
+            </section>
+
+<%- include('../partials/console-end') %>
+<%- include('../partials/console-close') %>

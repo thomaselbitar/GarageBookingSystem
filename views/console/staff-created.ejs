@@ -1,33 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%- include('../partials/favicon') %>
-    <title><%= account ? 'Staff Account Created' : 'Credentials Unavailable' %> | Garage Booking</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/admin.css">
-</head>
-<body class="admin-page">
-    <div class="admin-layout">
-        <%- include('../partials/admin-sidebar', { navActive: 'staff' }) %>
-
-        <main class="workspace">
-            <header class="topbar">
-                <div>
-                    <p class="eyebrow"><%= console.eyebrow %></p>
-                    <h1>Garage booking system</h1>
-                </div>
-                <div class="user-chip">
-                    <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
-                    <div>
-                        <strong><%= user.fullName %></strong>
-                        <small><%= console.roleLabel %></small>
-                    </div>
-                </div>
-            </header>
+<%- include('../partials/console-start', {
+    documentTitle: (account ? 'Staff Account Created' : 'Credentials Unavailable') + ' | Garage Booking',
+    navActive: 'staff',
+    pageHeading: 'Garage booking system'
+}) %>
 
             <% if (account) { %>
                 <section class="welcome-banner">
@@ -106,9 +81,8 @@
                     </div>
                 </section>
             <% } %>
-        </main>
-    </div>
 
+<%- include('../partials/console-end') %>
     <% if (account) { %>
         <script>
             const status = document.querySelector('#copy-status');
@@ -171,5 +145,4 @@
             });
         </script>
     <% } %>
-</body>
-</html>
+<%- include('../partials/console-close') %>

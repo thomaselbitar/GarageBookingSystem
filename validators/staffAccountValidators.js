@@ -37,6 +37,11 @@ const staffAccountValidators = [
         })
 ];
 
+const currentPasswordValidator = body('currentPassword')
+    .customSanitizer((value) => (typeof value === 'string' ? value : ''))
+    .notEmpty()
+    .withMessage('Enter your current password.');
+
 const employeePasswordValidators = [
     body('password')
         .customSanitizer((value) => (typeof value === 'string' ? value : ''))
@@ -64,6 +69,7 @@ const firstValidationError = (req) => {
 
 module.exports = {
     staffAccountValidators,
+    currentPasswordValidator,
     employeePasswordValidators,
     firstValidationError
 };

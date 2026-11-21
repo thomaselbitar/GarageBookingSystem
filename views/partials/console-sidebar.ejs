@@ -1,10 +1,10 @@
 <script>document.documentElement.classList.add('js-nav');</script>
 <div class="sidebar-slot">
-    <button class="nav-toggle" type="button" aria-controls="admin-sidebar" aria-expanded="false" aria-label="Open menu">
+    <button class="nav-toggle" type="button" aria-controls="console-sidebar" aria-expanded="false" aria-label="Open menu">
         <span class="nav-toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
     </button>
     <div class="nav-overlay" aria-hidden="true"></div>
-    <aside class="sidebar" id="admin-sidebar">
+    <aside class="sidebar" id="console-sidebar" data-menu-label="<%= console.navLabel %> menu">
         <div class="logo">
             <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
             <span><%= console.title %></span>
@@ -22,7 +22,20 @@
         </nav>
 
         <div class="sidebar-bottom">
-            <% if (typeof user !== 'undefined' && user && user.fullName) { %>
+            <% if (typeof user !== 'undefined' && user && user.fullName && user.role === 'ADMIN') { %>
+                <div class="profile-menu">
+                    <button class="sidebar-user profile-trigger" type="button" aria-expanded="false" aria-controls="profile-dropdown" aria-haspopup="menu">
+                        <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
+                        <div>
+                            <strong><%= user.fullName %></strong>
+                            <small><%= console.roleLabel %></small>
+                        </div>
+                    </button>
+                    <div class="profile-dropdown" id="profile-dropdown" role="menu" hidden>
+                        <a href="/admin/profile" role="menuitem">Profile</a>
+                    </div>
+                </div>
+            <% } else if (typeof user !== 'undefined' && user && user.fullName) { %>
                 <div class="sidebar-user">
                     <div class="avatar"><%= user.fullName.charAt(0).toUpperCase() %></div>
                     <div>
@@ -38,4 +51,4 @@
         </div>
     </aside>
 </div>
-<script src="/js/admin-nav.js" defer></script>
+<script src="/js/console-nav.js" defer></script>
