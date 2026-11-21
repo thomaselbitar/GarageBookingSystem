@@ -6,9 +6,11 @@ const sequelize = require('./config/database');
 
 const User = require('./models/User');
 const Otp = require('./models/Otp');
+require('./models/Vehicle');
 const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
 const customerAuthRoutes = require('./routes/customerAuthRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
 const staffAccountRoutes = require('./routes/staffAccountRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 
@@ -37,6 +39,7 @@ app.use(session({
 // Authentication Routes
 app.use('/', authRoutes);
 app.use('/', customerAuthRoutes);
+app.use('/', vehicleRoutes);
 app.use('/', staffAccountRoutes);
 app.use('/', employeeRoutes);
 

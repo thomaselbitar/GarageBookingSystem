@@ -1,0 +1,81 @@
+<%- include('../partials/customer-shell-start', {
+    documentTitle: 'Vehicle Details | Garage Booking',
+    pageHeading: 'Vehicle Details',
+    navActive: 'vehicles'
+}) %>
+
+            <div class="customer-vehicle-page">
+            <div class="customer-vehicle-page-bar">
+                <a class="customer-back" href="/customer/vehicles">
+                    <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+                        <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </a>
+                <div class="customer-vehicle-page-actions">
+                    <a class="customer-back" href="/customer/vehicles/<%= vehicle.id %>">
+                        Refresh
+                        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+                            <path d="M16.2 10a6.2 6.2 0 1 1-1.8-4.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            <path d="M16.4 3.6v3.8h-3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <button
+                        class="customer-vehicle-edit"
+                        type="button"
+                        data-id="<%= vehicle.id %>"
+                        data-make="<%= vehicle.make %>"
+                        data-model="<%= vehicle.model %>"
+                        data-year="<%= vehicle.year %>"
+                        data-license-plate="<%= vehicle.licensePlate %>"
+                        data-color="<%= vehicle.color %>"
+                        data-image="<%= vehicle.image %>"
+                    >Edit</button>
+                    <button
+                        class="customer-vehicle-delete"
+                        type="button"
+                        data-id="<%= vehicle.id %>"
+                        data-name="<%= vehicle.make %> <%= vehicle.model %>"
+                    >Delete</button>
+                </div>
+            </div>
+
+            <% if (formError) { %>
+                <p class="customer-form-alert" role="alert"><%= formError %></p>
+            <% } %>
+            <% if (formNotice) { %>
+                <p class="customer-form-notice" role="status"><%= formNotice %></p>
+            <% } %>
+
+            <article class="customer-vehicle-detail">
+                <div class="customer-vehicle-detail-photo">
+                    <% if (vehicle.image) { %>
+                        <img src="<%= vehicle.image %>" alt="<%= vehicle.make %> <%= vehicle.model %>">
+                    <% } else { %>
+                        <div class="customer-vehicle-fallback">Image unavailable</div>
+                    <% } %>
+                </div>
+                <div class="customer-vehicle-detail-panel">
+                    <h2><%= vehicle.make %> <%= vehicle.model %></h2>
+                    <dl class="customer-vehicle-detail-facts">
+                        <div>
+                            <dt>Year</dt>
+                            <dd><%= vehicle.year %></dd>
+                        </div>
+                        <div>
+                            <dt>License plate</dt>
+                            <dd><%= vehicle.licensePlate %></dd>
+                        </div>
+                        <div>
+                            <dt>Color</dt>
+                            <dd><%= vehicle.color %></dd>
+                        </div>
+                    </dl>
+                </div>
+            </article>
+            </div>
+
+<%- include('../partials/customer-shell-end') %>
+    <%- include('../partials/vehicle-modals') %>
+    <script src="/js/customer-vehicles.js" defer></script>
+<%- include('../partials/customer-shell-close') %>
