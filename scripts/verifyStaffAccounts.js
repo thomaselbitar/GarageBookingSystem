@@ -619,23 +619,44 @@ const run = async () => {
                 managerHome.text.includes('You are logged in as Manager') &&
                 managerHome.text.includes('Open bookings')
         );
+        const blockedManagerName = `Blocked Manager ${marker}`;
+        const beforeManager = await User.count({ where: { fullName: blockedManagerName } });
+        const createManagerAttempt = await request('/manager/staff', {
+            method: 'POST',
+            cookie: manager.loginCookie,
+            body: form({ fullName: blockedManagerName, role: 'MANAGER' })
+        });
+        const otherManagerRecord = otherManager
+            ? await User.findOne({ where: { username: otherManager.username } })
+            : null;
+        const otherManagerPage = otherManagerRecord
+            ? await request(`/manager/employees/${otherManagerRecord.id}`, { cookie: manager.loginCookie })
+            : null;
+
         record(
-            'Manager employee list hides admins and the signed-in manager',
+            'Manager employee list hides admins and managers',
             managerEmployees.status === 200 &&
                 !managerEmployees.text.includes('type=ADMIN') &&
+                !managerEmployees.text.includes('type=MANAGER') &&
                 !managerEmployees.text.includes(`<small>${manager.username}</small>`) &&
-                (!otherManager || managerEmployees.text.includes(`<small>${otherManager.username}</small>`)) &&
+                (!otherManager || !managerEmployees.text.includes(`<small>${otherManager.username}</small>`)) &&
                 managerSelf.status === 302 &&
                 managerSelf.location.includes('/manager/employees') &&
                 hiddenAdmin &&
                 hiddenAdmin.status === 404 &&
+                (!otherManagerPage || otherManagerPage.status === 404) &&
                 managerCreate.status === 200 &&
                 !managerCreate.text.includes('value="ADMIN"') &&
-                managerCreate.text.includes('value="MANAGER"') &&
+                !managerCreate.text.includes('value="MANAGER"') &&
+                managerCreate.text.includes('value="WASHING"') &&
                 createAdminAttempt.status === 303 &&
                 createAdminAttempt.location.includes('/manager/staff') &&
                 !createAdminAttempt.location.includes('/created') &&
-                await User.count({ where: { fullName: blockedAdminName } }) === beforeAdmin
+                await User.count({ where: { fullName: blockedAdminName } }) === beforeAdmin &&
+                createManagerAttempt.status === 303 &&
+                createManagerAttempt.location.includes('/manager/staff') &&
+                !createManagerAttempt.location.includes('/created') &&
+                await User.count({ where: { fullName: blockedManagerName } }) === beforeManager
         );
     } else {
         record('Manager cannot create a staff account from the admin console', false, 'manager login was not available');

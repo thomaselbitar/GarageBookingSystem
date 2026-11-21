@@ -15,7 +15,9 @@ const {
     employeePasswordValidators
 } = require('../validators/staffAccountValidators');
 
-const MANAGER_STAFF_ROLES = STAFF_ROLES.filter((role) => role.value !== 'ADMIN');
+const MANAGER_STAFF_ROLES = STAFF_ROLES.filter(
+    (role) => role.value !== 'ADMIN' && role.value !== 'MANAGER'
+);
 
 const withConsole = (consoleConfig) => (req, res, next) => {
     req.console = consoleConfig;
