@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./customer-head') %>
+    <title><%= documentTitle %></title>
+    <script>document.documentElement.classList.add('customer-js-nav');</script>
+</head>
+<body class="customer-page">
+    <% const customerName = user && user.fullName ? user.fullName : ''; %>
+    <% const customerInitial = (customerName || 'C').charAt(0).toUpperCase(); %>
+    <% const customerRole = user && user.role === 'CUSTOMER' ? 'Customer' : (user && user.role ? user.role : 'Customer'); %>
+    <div class="customer-shell">
+        <div class="customer-sidebar-slot">
+            <button class="customer-nav-toggle" type="button" aria-controls="customer-sidebar" aria-expanded="false" aria-label="Open menu">
+                <span class="customer-nav-toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+            </button>
+            <div class="customer-nav-overlay" aria-hidden="true"></div>
+            <aside class="customer-sidebar" id="customer-sidebar" data-menu-label="Customer menu">
+                <div class="customer-brand">
+                    <img src="/images/logo.png" alt="AutoHub">
+                    <span>Customer portal</span>
+                </div>
+                <button class="customer-nav-close" type="button" aria-label="Close menu">
+                    <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+                        <path d="M5 5l10 10M15 5 5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                </button>
+
+                <nav class="customer-nav" aria-label="Customer">
+                    <a href="/customer/dashboard" class="<%= navActive === 'overview' ? 'active' : '' %>"<% if (navActive === 'overview') { %> aria-current="page"<% } %>>Overview</a>
+                </nav>
+
+                <div class="customer-sidebar-bottom">
+                    <div class="customer-profile-menu">
+                        <button class="customer-sidebar-user customer-profile-trigger" type="button" aria-expanded="false" aria-controls="customer-profile-dropdown" aria-haspopup="menu">
+                            <div class="customer-avatar" aria-hidden="true"><%= customerInitial %></div>
+                            <div>
+                                <strong><%= customerName || 'Customer' %></strong>
+                                <small><%= customerRole %></small>
+                            </div>
+                        </button>
+                        <div class="customer-profile-dropdown" id="customer-profile-dropdown" role="menu" hidden>
+                            <a href="/customer/profile" role="menuitem">Profile</a>
+                        </div>
+                    </div>
+                    <form action="/logout" method="POST">
+                        <button class="customer-logout" type="submit">Logout</button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+
+        <main class="customer-workspace">
+            <header class="customer-topbar">
+                <div class="customer-topbar-title">
+                    <p class="customer-eyebrow">Customer portal</p>
+                    <h1><%= pageHeading %></h1>
+                </div>
+                <div class="customer-user-chip">
+                    <div class="customer-avatar" aria-hidden="true"><%= customerInitial %></div>
+                    <div>
+                        <strong><%= customerName || 'Customer' %></strong>
+                        <small><%= customerRole %></small>
+                    </div>
+                </div>
+            </header>

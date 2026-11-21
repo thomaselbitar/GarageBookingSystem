@@ -1,0 +1,86 @@
+<%- include('../partials/customer-shell-start', {
+    documentTitle: 'Profile | Garage Booking',
+    pageHeading: 'Profile',
+    navActive: 'profile'
+}) %>
+
+            <a class="customer-back" href="/customer/dashboard">
+                <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+                    <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back
+            </a>
+
+            <div class="customer-section-head">
+                <h2>Your account</h2>
+                <p>These details stay fixed. You can change your password.</p>
+            </div>
+
+            <section class="customer-panel">
+                <% if (formError) { %>
+                    <p class="customer-form-alert" role="alert"><%= formError %></p>
+                <% } %>
+
+                <form class="customer-form" action="/customer/profile/password" method="POST" autocomplete="off">
+                    <div class="customer-detail-grid">
+                        <div class="field">
+                            <label for="fullName">Full name</label>
+                            <input id="fullName" type="text" value="<%= profile.fullName %>" readonly>
+                        </div>
+                        <div class="field">
+                            <label for="email">Email</label>
+                            <input id="email" type="email" value="<%= profile.email %>" readonly>
+                        </div>
+                        <div class="field">
+                            <label for="role">Role</label>
+                            <input id="role" type="text" value="<%= profile.roleLabel %>" readonly>
+                        </div>
+                        <div class="field">
+                            <label for="currentPassword">Current password</label>
+                            <div class="password-wrap">
+                                <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required>
+                                <button class="toggle-pass" type="button" aria-label="Show current password">Show</button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="password">New password</label>
+                            <div class="password-wrap">
+                                <input id="password" name="password" type="password" autocomplete="new-password" required>
+                                <button class="toggle-pass" type="button" aria-label="Show new password">Show</button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="confirmPassword">Confirm new password</label>
+                            <div class="password-wrap">
+                                <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required>
+                                <button class="toggle-pass" type="button" aria-label="Show password confirmation">Show</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="customer-submit" type="submit">Change password</button>
+                </form>
+            </section>
+
+<%- include('../partials/customer-shell-end') %>
+    <% if (passwordUpdated) { %>
+        <div class="customer-popup" id="password-popup" role="dialog" aria-modal="true" aria-labelledby="password-updated-title">
+            <div class="customer-popup-card">
+                <h2 id="password-updated-title">Password updated</h2>
+                <p>Your password has been changed.</p>
+                <button class="customer-submit" type="button" id="close-success">OK</button>
+            </div>
+        </div>
+        <script>
+            const passwordPopup = document.querySelector('#password-popup');
+            const closeSuccess = document.querySelector('#close-success');
+            if (passwordPopup && closeSuccess) {
+                closeSuccess.addEventListener('click', () => passwordPopup.remove());
+                passwordPopup.addEventListener('click', (event) => {
+                    if (event.target === passwordPopup) passwordPopup.remove();
+                });
+            }
+        </script>
+    <% } %>
+    <%- include('../partials/password-toggle') %>
+    <%- include('../partials/form-validate') %>
+<%- include('../partials/customer-shell-close') %>

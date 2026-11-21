@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const customerAuthController = require('../controllers/customerAuthController');
+const customerProfileController = require('../controllers/customerProfileController');
 const {
     requireCustomerAuth,
     redirectIfAuthenticated
@@ -10,7 +11,8 @@ const {
     signupEmailValidators,
     loginValidators,
     otpValidators,
-    passwordValidators
+    passwordValidators,
+    profilePasswordValidators
 } = require('../validators/customerAuthValidators');
 
 router.get(
@@ -111,6 +113,18 @@ router.get(
     '/customer/dashboard',
     requireCustomerAuth,
     customerAuthController.getDashboard
+);
+
+router.get(
+    '/customer/profile',
+    requireCustomerAuth,
+    customerProfileController.getProfile
+);
+router.post(
+    '/customer/profile/password',
+    requireCustomerAuth,
+    profilePasswordValidators,
+    customerProfileController.updatePassword
 );
 
 module.exports = router;

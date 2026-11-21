@@ -1,41 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <%- include('../partials/customer-head') %>
-    <title>Customer Dashboard | Garage Booking</title>
-</head>
-<body class="customer-page">
-    <main class="customer-layout">
-        <header class="customer-top">
-            <div>
-                <img class="brand-logo" src="/images/logo.png" alt="AutoHub">
-                <p class="eyebrow">Customer portal</p>
-                <h1>Your garage bookings</h1>
-            </div>
-            <form action="/logout" method="POST">
-                <button class="logout-btn" type="submit">Logout</button>
-            </form>
-        </header>
+<%- include('../partials/customer-shell-start', {
+    documentTitle: 'Customer Dashboard | Garage Booking',
+    pageHeading: 'Your garage bookings',
+    navActive: 'overview'
+}) %>
+            <% const customerName = user && user.fullName ? user.fullName : ''; %>
 
-        <section class="welcome-card">
-            <h2>Welcome<%= user.fullName ? ', ' + user.fullName : '' %>.</h2>
-            <p>You are signed in as a customer<%= user.email ? ' (' + user.email + ')' : '' %>. Book services and track your vehicles from this dashboard.</p>
-        </section>
+            <section class="customer-welcome">
+                <h2>Welcome<%= customerName ? ', ' + customerName : '' %>.</h2>
+                <p>You are signed in as a customer<% if (user && user.email) { %> (<span class="customer-email"><% user.email.split(/([.@])/).forEach((part) => { %><%= part %><% if (part === '@' || part === '.') { %><wbr><% } %><% }) %></span>)<% } %>. Book services and track your vehicles from this dashboard.</p>
+            </section>
 
-        <section class="panel-grid">
-            <article class="panel-card">
-                <h2>Upcoming bookings</h2>
-                <p>You have no upcoming appointments yet. Booking will appear here once that feature is connected.</p>
-            </article>
-            <article class="panel-card">
-                <h2>Vehicles</h2>
-                <p>Keep your vehicle details ready so the shop can prepare the right bay and parts.</p>
-            </article>
-            <article class="panel-card">
-                <h2>Account</h2>
-                <p>Your login uses email and password. Staff accounts cannot access this customer portal.</p>
-            </article>
-        </section>
-    </main>
-</body>
-</html>
+            <section class="customer-cards" aria-label="Dashboard overview">
+                <article class="customer-card" style="--accent:#ee7113">
+                    <div class="customer-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M8 3.5v3M16 3.5v3M4 10h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h2>Upcoming bookings</h2>
+                    <p>You have no upcoming appointments yet. Booking will appear here once that feature is connected.</p>
+                </article>
+                <article class="customer-card" style="--accent:#3ecfbf">
+                    <div class="customer-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path d="M4 14.5 6.2 9.2A2 2 0 0 1 8 8h8a2 2 0 0 1 1.8 1.2L20 14.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                            <path d="M3.5 14.5h17V18a1 1 0 0 1-1 1h-1.2a1 1 0 0 1-1-1v-.5H6.7V18a1 1 0 0 1-1 1H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                            <circle cx="7.5" cy="16.2" r="1.1" fill="currentColor"/>
+                            <circle cx="16.5" cy="16.2" r="1.1" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h2>Vehicles</h2>
+                    <p>Keep your vehicle details ready so the shop can prepare the right bay and parts.</p>
+                </article>
+                <article class="customer-card" style="--accent:#6ea8ff">
+                    <div class="customer-card-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <circle cx="12" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M5.5 19.2c1.4-2.6 3.6-3.9 6.5-3.9s5.1 1.3 6.5 3.9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h2>Account</h2>
+                    <p>Your login uses email and password. Staff accounts cannot access this customer portal.</p>
+                </article>
+            </section>
+
+<%- include('../partials/customer-shell-end') %>
+<%- include('../partials/customer-shell-close') %>
